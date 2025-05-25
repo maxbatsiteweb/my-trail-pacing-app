@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import "leaflet/dist/leaflet.css";
 
-import dynamic from "next/dynamic";
+//import dynamic from "next/dynamic";
 
 // const DynamicMap = dynamic(
   
