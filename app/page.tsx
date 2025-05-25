@@ -1,9 +1,25 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
-import { TileLayer, Marker, Popup, Polyline  } from "react-leaflet";
-import { MapContainer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+
+import dynamic from "next/dynamic";
+
+// Import dynamique du MapContainer et composants Leaflet, désactivé côté serveur
+const MapContainer = dynamic(() => import("react-leaflet").then(mod => mod.MapContainer), { ssr: false });
+const TileLayer = dynamic(() => import("react-leaflet").then(mod => mod.TileLayer), { ssr: false });
+const Marker = dynamic(() => import("react-leaflet").then(mod => mod.Marker), { ssr: false });
+const Popup = dynamic(() => import("react-leaflet").then(mod => mod.Popup), { ssr: false });
+const Polyline = dynamic(() => import("react-leaflet").then(mod => mod.Polyline), { ssr: false });
+
+// Correction icône par défaut Leaflet
+if (typeof window !== "undefined") {
+  L.Icon.Default.mergeOptions({
+    iconRetinaUrl: markerIcon2x.src,
+    iconUrl: markerIcon.src,
+    shadowUrl: markerShadow.src,
+  });
+}
 
 // Correction icône par défaut Leaflet pour Next.js/React
 import L from "leaflet";
@@ -13,12 +29,6 @@ import markerShadow from "leaflet/dist/images/marker-shadow.png";
 
 import GeoJsonTable from "@/components/PacingCalculator";
 
-
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: markerIcon2x.src,
-  iconUrl: markerIcon.src,
-  shadowUrl: markerShadow.src,
-});
 
 export default function Home() {
   const courses = [
