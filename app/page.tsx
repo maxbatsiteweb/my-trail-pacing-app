@@ -33,14 +33,14 @@ export default function Home() {
     { id: "course4", name: "S", km: 7, d_plus: 246, d_moins: 246},
   ];
 
-  useEffect(() => {
-    // Cette ligne doit être exécutée uniquement côté client, ici dans useEffect
-    L.Icon.Default.mergeOptions({
-      iconRetinaUrl: markerIcon2x.src,
-      iconUrl: markerIcon.src,
-      shadowUrl: markerShadow.src,
-    });
-  }, []);
+  // useEffect(() => {
+  //   // Cette ligne doit être exécutée uniquement côté client, ici dans useEffect
+  //   L.Icon.Default.mergeOptions({
+  //     iconRetinaUrl: markerIcon2x.src,
+  //     iconUrl: markerIcon.src,
+  //     shadowUrl: markerShadow.src,
+  //   });
+  // }, []);
 
 
 
