@@ -272,7 +272,7 @@ useEffect(() => {
         {/* Allure */}
         <section className="resume box">
           <h2><strong>Détails</strong></h2>
-          <p>
+        
             <br />
             Temps estimé : <strong>{secondsToHHMMSS(totalSeconds)}</strong><br /> 
             <div className="tooltip-wrapper">
@@ -285,7 +285,7 @@ useEffect(() => {
             Dénivelé positif : <strong>{courses.find((c) => c.id === selectedCourse)?.d_plus} m</strong><br />
             Dénivelé négatif : <strong>{courses.find((c) => c.id === selectedCourse)?.d_moins} m</strong><br />
 
-          </p>
+          
         </section>
 
         {/* Carte de la course */}

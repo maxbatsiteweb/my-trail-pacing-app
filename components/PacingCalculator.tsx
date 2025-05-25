@@ -34,12 +34,6 @@ export default function GeoJsonTable({ extraColumnName, extraColumnFn, extraColu
         cum_distance && cum_positive_elevation && dist &&
         cum_positive_elevation.length === dist.length
       ) {
-        // Toutes les lignes complètes
-        interface RowData {
-          cum_distance: number;
-          cum_positive_elevation: number;
-          dist: number;
-        }
 
         // Trouver les indices les plus proches pour chaque valeur cible
         let selectedIndices: number[] = [];
