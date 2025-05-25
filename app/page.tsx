@@ -5,11 +5,11 @@ import "leaflet/dist/leaflet.css";
 
 import dynamic from "next/dynamic";
 
-const DynamicMap = dynamic(
+// const DynamicMap = dynamic(
   
-  () => import("../components/MapComponent"), // Met ta map dans un fichier séparé, exemple MapComponent.tsx
-  { ssr: false } // <-- Désactive le SSR pour ce composant
-);
+//   () => import("../components/MapComponent"), // Met ta map dans un fichier séparé, exemple MapComponent.tsx
+//   { ssr: false } // <-- Désactive le SSR pour ce composant
+// );
 
 // Import dynamique du MapContainer et composants Leaflet, désactivé côté serveur
 
@@ -302,12 +302,12 @@ const extraColumnFn = useMemo(() => {
           
         </section>
 
-        {/* Carte de la course */}
+        {/* Carte de la course
            
           <div className="map">
           <DynamicMap />
           
-          </div>
+          </div> */}
        
 
         {/* Panneau temps ravitos et km */}
