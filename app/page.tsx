@@ -186,7 +186,7 @@ const extraColumnFn = useMemo(() => {
 }, [resultats]);
 
 
-type Point = { lat: number; lng: number };
+//type Point = { lat: number; lng: number };
 
 //const [polylinePoints, setPolylinePoints] = useState<Point[]>([]);
 
