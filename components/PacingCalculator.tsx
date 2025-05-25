@@ -14,10 +14,10 @@ interface GeoJsonTableProps {
 
 export default function GeoJsonTable({ extraColumnName, extraColumnFn, extraColumnPoint, extraColumnPointName }: GeoJsonTableProps) {
   const [rows, setRows] = useState<({
-    pointName?: string;
     cum_distance: number;
     cum_positive_elevation: number;
     dist: number;
+    pointName?: string;
     extra?: string;
   })[]>([]);
 
@@ -63,13 +63,14 @@ export default function GeoJsonTable({ extraColumnName, extraColumnFn, extraColu
 
         // Construire les lignes filtrées avec éventuellement la colonne extra
         const filteredRows = uniqueIndices.map((i, idx) => {
+          const cumDistKm = cum_distance[i] / 1000;
+          const roundedCumDist = Math.round(cumDistKm * 100) / 100;
+
           const baseRow = {
-            cum_distance: Math.round((cum_distance[i] / 1000) * 100) / 100 % 1 === 0
-              ? (Math.round((cum_distance[i] / 1000) * 100) / 100).toFixed(2)
-              : Math.round((cum_distance[i] / 1000) * 100) / 100,
+            cum_distance: roundedCumDist,
             cum_positive_elevation: Math.round(cum_positive_elevation[i]),
             dist: Math.round(dist[i]),
-            pointName: extraColumnPointName?.[idx] ?? "", // associer le nom si dispo
+            pointName: String(extraColumnPointName?.[idx] ?? ""), // associer le nom si dispo
           };
 
           return extraColumnFn
@@ -87,7 +88,7 @@ export default function GeoJsonTable({ extraColumnName, extraColumnFn, extraColu
       }
     })
     .catch(err => console.error("Erreur de chargement GeoJSON :", err));
-}, [extraColumnFn, extraColumnPoint]);
+}, [extraColumnFn, extraColumnPoint, extraColumnPointName]);
 
   
 
