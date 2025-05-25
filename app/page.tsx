@@ -13,12 +13,6 @@ import markerShadow from "leaflet/dist/images/marker-shadow.png";
 
 import GeoJsonTable from "@/components/PacingCalculator";
 
-const points: { lat: number; lng: number; name: string }[] = [
-  { lat: 45.919, lng: 6.631, name: "Combloux" },
-  { lat: 45.922, lng: 6.635, name: "Point 1" },
-  { lat: 45.925, lng: 6.640, name: "Point 2" },
-];
-
 
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: markerIcon2x.src,
@@ -37,7 +31,6 @@ export default function Home() {
 
 
   const [selectedCourse, setSelectedCourse] = useState(courses[0].id);
-  const [estimatedTime, setEstimatedTime] = useState("");
   const [activeTab, setActiveTab] = useState<"ravitos" | "kilometre">("ravitos");
 
   const [hours, setHours] = useState("");
@@ -54,7 +47,6 @@ export default function Home() {
   };
 
   const [metaData, setMetaData] = useState<MetaData | null>(null);
-  const [geojsonData, setGeojsonData] = useState(null);
   const [resultats, setResultats] = useState<string[] | null>(null);
 
 
@@ -136,7 +128,6 @@ export default function Home() {
   fetch("data/combloux_42.geojson")
     .then((res) => res.json())
     .then((data) => {
-      setGeojsonData(data);
 
       // Accès aux propriétés
       const properties = data.geometry;

@@ -41,12 +41,6 @@ export default function GeoJsonTable({ extraColumnName, extraColumnFn, extraColu
           dist: number;
         }
 
-        const allRows: RowData[] = cum_distance.map((_: number, i: number) => ({
-          cum_distance: cum_distance[i],
-          cum_positive_elevation: cum_positive_elevation[i],
-          dist: dist[i],
-        }));
-
         // Trouver les indices les plus proches pour chaque valeur cible
         let selectedIndices: number[] = [];
 
