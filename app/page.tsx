@@ -309,26 +309,9 @@ useEffect(() => {
         {/* Carte de la course */}
            
           <div className="map">
-          <MapContainer
-              center={[45.919, 6.631] as [number, number]}
-              zoom={13}
-              scrollWheelZoom={true}
-              style={{ height: "100%", width: "100%" }}
-            >
-
-            <TileLayer
-              attribution='&copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-
-
-            <Marker position={[45.919, 6.631]}>
-              <Popup>Combloux, Rhône-Alpes</Popup>
-            </Marker>
-
-
-        <Polyline positions={polylinePoints} color="blue" />
-          </MapContainer>
+          <DynamicMap />
+          
+         
           </div>
        
 

@@ -20,18 +20,19 @@ export default function MapComponent() {
 
   return (
     <MapContainer
-      center={[48.8566, 2.3522]} // Paris, par exemple
-      zoom={13}
-      scrollWheelZoom={false}
-      style={{ height: "400px", width: "100%" }}
-    >
-      <TileLayer
-        attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
-      <Marker position={[48.8566, 2.3522]}>
-        <Popup>Voici Paris !</Popup>
-      </Marker>
+              center={[45.919, 6.631] as [number, number]}
+              zoom={13}
+              scrollWheelZoom={true}
+              style={{ height: "100%", width: "100%" }}
+            >
+       <TileLayer
+              attribution='&copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+      <Marker position={[45.919, 6.631]}>
+              <Popup>Combloux, Rhône-Alpes</Popup>
+            </Marker>
+
     </MapContainer>
   );
 }
