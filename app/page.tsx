@@ -12,14 +12,7 @@ const Marker = dynamic(() => import("react-leaflet").then(mod => mod.Marker), { 
 const Popup = dynamic(() => import("react-leaflet").then(mod => mod.Popup), { ssr: false });
 const Polyline = dynamic(() => import("react-leaflet").then(mod => mod.Polyline), { ssr: false });
 
-// Correction icône par défaut Leaflet
-if (typeof window !== "undefined") {
-  L.Icon.Default.mergeOptions({
-    iconRetinaUrl: markerIcon2x.src,
-    iconUrl: markerIcon.src,
-    shadowUrl: markerShadow.src,
-  });
-}
+
 
 // Correction icône par défaut Leaflet pour Next.js/React
 import L from "leaflet";
@@ -37,6 +30,15 @@ export default function Home() {
     { id: "course3", name: "M", km: 15, d_plus: 982, d_moins: 982},
     { id: "course4", name: "S", km: 7, d_plus: 246, d_moins: 246},
   ];
+
+  useEffect(() => {
+    // Cette ligne doit être exécutée uniquement côté client, ici dans useEffect
+    L.Icon.Default.mergeOptions({
+      iconRetinaUrl: markerIcon2x.src,
+      iconUrl: markerIcon.src,
+      shadowUrl: markerShadow.src,
+    });
+  }, []);
 
 
 
