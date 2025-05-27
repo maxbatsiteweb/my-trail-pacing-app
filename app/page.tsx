@@ -387,7 +387,6 @@ useEffect(() => {
           <div style={{ height: "200px" }}>
           <canvas id="elevationChart"></canvas>
           </div>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
         </section>
 
