@@ -211,28 +211,28 @@ const extraColumnFn = useMemo(() => {
 }, [resultats]);
 
 
-type Point = { lat: number; lng: number };
-const [polylinePoints, setPolylinePoints] = useState<Point[]>([]);
+//type Point = { lat: number; lng: number };
+//const [polylinePoints, setPolylinePoints] = useState<Point[]>([]);
 
-useEffect(() => {
-  fetch(geojsonPath)
-    .then((res) => res.json())
-    .then((geojson) => {
-      if (
-        geojson &&
-        geojson.geometry &&
-        geojson.geometry.type === "LineString" &&
-        Array.isArray(geojson.geometry.coordinates)
-      ) {
-        const points = geojson.geometry.coordinates.map((coord: number[]) => ({
-          lng: coord[0],
-          lat: coord[1],
-        }));
-        setPolylinePoints(points);
-      }
-    })
-    .catch((err) => console.error("Erreur de chargement du GeoJSON :", err));
-}, []);
+// useEffect(() => {
+//   fetch(geojsonPath)
+//     .then((res) => res.json())
+//     .then((geojson) => {
+//       if (
+//         geojson &&
+//         geojson.geometry &&
+//         geojson.geometry.type === "LineString" &&
+//         Array.isArray(geojson.geometry.coordinates)
+//       ) {
+//         const points = geojson.geometry.coordinates.map((coord: number[]) => ({
+//           lng: coord[0],
+//           lat: coord[1],
+//         }));
+//         setPolylinePoints(points);
+//       }
+//     })
+//     .catch((err) => console.error("Erreur de chargement du GeoJSON :", err));
+// }, []);
 
 
 // Exemple de données
