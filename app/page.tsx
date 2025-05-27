@@ -4,8 +4,23 @@ import React, { useState, useEffect, useMemo } from "react";
 import "leaflet/dist/leaflet.css";
 import dynamic from "next/dynamic";
 import GeoJsonTable from "@/components/PacingCalculator";
-import { Chart, registerables } from "chart.js";
-import { TooltipItem } from 'chart.js';
+import { TooltipItem,Chart,
+  LineController,
+  LineElement,
+  PointElement,
+  LinearScale,
+  Title,
+  Tooltip,
+  CategoryScale,
+  registerables,
+  Filler } from 'chart.js';
+import {
+  
+} from 'chart.js';
+
+// Register components
+Chart.register(LineController, LineElement, PointElement, LinearScale, Title, Tooltip, CategoryScale, Filler);
+
 
 
 declare global {
