@@ -6,6 +6,12 @@ import dynamic from "next/dynamic";
 import GeoJsonTable from "@/components/PacingCalculator";
 import { Chart, registerables } from "chart.js";
 
+declare global {
+  interface Window {
+    elevationChartInstance?: Chart;
+  }
+}
+
 const DynamicMap = dynamic(
   
   () => import("../components/MapComponent"), // Met ta map dans un fichier séparé, exemple MapComponent.tsx
@@ -42,6 +48,9 @@ export default function Home() {
   //     shadowUrl: markerShadow.src,
   //   });
   // }, []);
+
+ 
+
 
 
 
@@ -272,11 +281,11 @@ useEffect(() => {
     const ctx = canvas.getContext('2d');
     if (ctx) {
       // Destroy previous chart instance if it exists to avoid duplicates
-      if ((window as any).elevationChartInstance) {
-        (window as any).elevationChartInstance.destroy();
+      if (window.elevationChartInstance) {
+        window.elevationChartInstance.destroy();
       }
       
-      (window as any).elevationChartInstance = new Chart(ctx, {
+      window.elevationChartInstance = new Chart(ctx, {
         type: 'line',
         
         data: {
@@ -326,9 +335,9 @@ useEffect(() => {
   }
   // Cleanup on unmount
   return () => {
-    if ((window as any).elevationChartInstance) {
-      (window as any).elevationChartInstance.destroy();
-      (window as any).elevationChartInstance = null;
+    if (window.elevationChartInstance) {
+      window.elevationChartInstance.destroy();
+      window.elevationChartInstance = undefined;
     }
   };
 }, [altitudes, distances]);
