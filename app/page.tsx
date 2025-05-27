@@ -5,6 +5,8 @@ import "leaflet/dist/leaflet.css";
 import dynamic from "next/dynamic";
 import GeoJsonTable from "@/components/PacingCalculator";
 import { Chart, registerables } from "chart.js";
+import { TooltipItem } from 'chart.js';
+
 
 declare global {
   interface Window {
@@ -324,8 +326,8 @@ useEffect(() => {
             },
             tooltip: {
               callbacks: {
-                title: (context: any) => `Distance : ${context[0].label} km`,
-                label: (context: any) => `Altitude : ${context.formattedValue} m`
+                  title: (context: TooltipItem<'line'>[]) => `Distance : ${context[0].label} km`,
+                  label: (context: TooltipItem<'line'>) => `Altitude : ${context.formattedValue} m`
               }
             }
           }
