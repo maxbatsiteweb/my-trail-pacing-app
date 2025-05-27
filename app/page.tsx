@@ -4,6 +4,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import "leaflet/dist/leaflet.css";
 import dynamic from "next/dynamic";
 import GeoJsonTable from "@/components/PacingCalculator";
+import Header from "@/components/Header"; 
 import { TooltipItem,Chart,
   LineController,
   LineElement,
@@ -362,6 +363,7 @@ useEffect(() => {
 
   return (
     <>
+    <Header /> 
       <div className="container">
         <section className="choice box">
           <label htmlFor="course-select">Sélectionnez une course :</label>
