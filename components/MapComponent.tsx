@@ -10,7 +10,6 @@ import markerShadow from "leaflet/dist/images/marker-shadow.png";
 
 export default function MapComponent() {
   useEffect(() => {
-    // Configurer les icônes par défaut de Leaflet côté client uniquement
     L.Icon.Default.mergeOptions({
       iconRetinaUrl: markerIcon2x.src,
       iconUrl: markerIcon.src,

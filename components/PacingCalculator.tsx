@@ -9,10 +9,11 @@ interface GeoJsonTableProps {
   extraColumnFn?: ExtraColumnFunction;
   extraColumnPoint?: (number | string)[];
   extraColumnPointName?: (number | string)[];
+  geojsonPath?: string;
 }
 
 
-export default function GeoJsonTable({ extraColumnName, extraColumnFn, extraColumnPoint, extraColumnPointName }: GeoJsonTableProps) {
+export default function GeoJsonTable({ extraColumnName, extraColumnFn, extraColumnPoint, extraColumnPointName, geojsonPath}: GeoJsonTableProps) {
   const [rows, setRows] = useState<({
     cum_distance: number;
     cum_positive_elevation: number;
@@ -22,8 +23,12 @@ export default function GeoJsonTable({ extraColumnName, extraColumnFn, extraColu
   })[]>([]);
 
 
-  useEffect(() => {
-  fetch("/data/combloux_42.geojson")
+useEffect(() => {
+  if (!geojsonPath) {
+    console.error("geojsonPath is undefined");
+    return;
+  }
+  fetch(geojsonPath)
     .then(res => res.json())
     .then(data => {
       const cum_distance = data.geometry.cum_distance;
@@ -35,7 +40,6 @@ export default function GeoJsonTable({ extraColumnName, extraColumnFn, extraColu
         cum_positive_elevation.length === dist.length
       ) {
 
-        // Trouver les indices les plus proches pour chaque valeur cible
         let selectedIndices: number[] = [];
 
         if (extraColumnPoint && extraColumnPoint.length > 0) {
@@ -46,22 +50,19 @@ export default function GeoJsonTable({ extraColumnName, extraColumnFn, extraColu
             cum_distance.forEach((val: number, i: number) => {
               const diff: number = Math.abs(val - (target as number));
               if (diff < minDiff) {
-              minDiff = diff;
-              closestIndex = i;
+                minDiff = diff;
+                closestIndex = i;
               }
             });
 
             return closestIndex;
           });
         } else {
-          // Si aucune valeur cible fournie, on prend tout
-            selectedIndices = cum_distance.map((_: number, i: number) => i);
+          selectedIndices = cum_distance.map((_: number, i: number) => i);
         }
 
-        // Supprimer les doublons d’index (au cas où)
         const uniqueIndices = [...new Set(selectedIndices)];
 
-        // Construire les lignes filtrées avec éventuellement la colonne extra
         const filteredRows = uniqueIndices.map((i, idx) => {
           const cumDistKm = cum_distance[i] / 1000;
           const roundedCumDist = Math.round(cumDistKm * 100) / 100;
@@ -74,11 +75,11 @@ export default function GeoJsonTable({ extraColumnName, extraColumnFn, extraColu
           };
 
           return extraColumnFn
-  ? {
-      ...baseRow,
-      extra: String(extraColumnFn(cum_distance[i], cum_positive_elevation[i], dist[i], i)),
-    }
-  : baseRow;
+            ? {
+                ...baseRow,
+                extra: String(extraColumnFn(cum_distance[i], cum_positive_elevation[i], dist[i], i)),
+              }
+            : baseRow;
 
         });
 
@@ -88,7 +89,7 @@ export default function GeoJsonTable({ extraColumnName, extraColumnFn, extraColu
       }
     })
     .catch(err => console.error("Erreur de chargement GeoJSON :", err));
-}, [extraColumnFn, extraColumnPoint, extraColumnPointName]);
+}, [geojsonPath, extraColumnFn, extraColumnPoint, extraColumnPointName]);
 
   
 

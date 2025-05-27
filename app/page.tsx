@@ -2,14 +2,15 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import "leaflet/dist/leaflet.css";
+import dynamic from "next/dynamic";
+import GeoJsonTable from "@/components/PacingCalculator";
+import { Chart, registerables } from "chart.js";
 
-//import dynamic from "next/dynamic";
-
-// const DynamicMap = dynamic(
+const DynamicMap = dynamic(
   
-//   () => import("../components/MapComponent"), // Met ta map dans un fichier séparé, exemple MapComponent.tsx
-//   { ssr: false } // <-- Désactive le SSR pour ce composant
-// );
+  () => import("../components/MapComponent"), // Met ta map dans un fichier séparé, exemple MapComponent.tsx
+  { ssr: false } // <-- Désactive le SSR pour ce composant
+);
 
 // Import dynamique du MapContainer et composants Leaflet, désactivé côté serveur
 
@@ -22,7 +23,7 @@ import "leaflet/dist/leaflet.css";
 // import markerIcon from "leaflet/dist/images/marker-icon.png";
 // import markerShadow from "leaflet/dist/images/marker-shadow.png";
 
-import GeoJsonTable from "@/components/PacingCalculator";
+
 
 
 export default function Home() {
@@ -52,14 +53,29 @@ export default function Home() {
   const [seconds, setSeconds] = useState("");
   const [totalSeconds, setTotalSeconds] = useState(0);
 
-  type MetaData = {
-    maratrail: {
-      difficulty: number;
-      // Ajoutez d'autres propriétés ici si nécessaire
-    };
-    // Ajoutez d'autres propriétés ici si nécessaire
-  };
 
+  type MetaData = {
+    xl: {
+      difficulty: number;
+      checkpoint_distance: [number];
+      checkpoint_name: [string];
+    };
+    l: {
+      difficulty: number;
+      checkpoint_distance: [number];
+      checkpoint_name: [string];
+    };
+    m: {
+      difficulty: number;
+      checkpoint_distance: [number];
+      checkpoint_name: [string];
+    };
+    s: {
+      difficulty: number;
+      checkpoint_distance: [number];
+      checkpoint_name: [string];
+    };
+  };
   const [metaData, setMetaData] = useState<MetaData | null>(null);
   const [resultats, setResultats] = useState<string[] | null>(null);
 
@@ -81,12 +97,9 @@ export default function Home() {
   }, []);
 
 
- 
 
-
-  // Gestion simple pour limiter les valeurs et n'accepter que des chiffres
   const handleHoursChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let val = e.target.value.replace(/\D/g, "").slice(0, 2); // que des chiffres, max 2 chiffres
+    let val = e.target.value.replace(/\D/g, "").slice(0, 2); 
     if (val !== "") {
       const num = Math.min(parseInt(val, 10), 23);
       val = num.toString();
@@ -112,7 +125,6 @@ export default function Home() {
     setSeconds(val);
   };
 
-  // Utilise useEffect pour recalculer totalSeconds à chaque changement des inputs
   useEffect(() => {
     const h = parseInt(hours || "0", 10);
     const m = parseInt(minutes || "0", 10);
@@ -122,40 +134,52 @@ export default function Home() {
     setTotalSeconds(total);
   }, [hours, minutes, seconds]);
 
+
   let vap = 0;
   let vap_string = "";
+
+
+    const selected = courses.find(c => c.id === selectedCourse);
+    const courseKey = selected ? selected.name.toLowerCase() : ""; 
+    const geojsonPath = courseKey ? `data/races/combloux_${courseKey}.geojson` : "";
+
+
   if (metaData) {
-    const difficulty = metaData.maratrail.difficulty;
-    vap = difficulty / totalSeconds;
+
+    const courseKey = selected?.name.toLowerCase() as keyof typeof metaData;
+
+    if (courseKey && metaData[courseKey]) {
+      const difficulty = metaData[courseKey].difficulty;
+      vap = difficulty / totalSeconds;
     
-    if (vap > 0) {
-      const secondsPerKm = 1000 / vap;
-      const minutes = Math.floor(secondsPerKm / 60);
-      const seconds = Math.round(secondsPerKm % 60);
-      vap_string = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+      if (vap > 0) {
+        const secondsPerKm = 1000 / vap;
+        const minutes = Math.floor(secondsPerKm / 60);
+        const seconds = Math.round(secondsPerKm % 60);
+        vap_string = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+      } else {
+        vap_string = "N/A";
+      }
     } else {
       vap_string = "N/A";
-    }
+   } 
   }
 
   useEffect(() => {
-  fetch("data/combloux_42.geojson")
+  fetch(geojsonPath)
     .then((res) => res.json())
     .then((data) => {
 
-      // Accès aux propriétés
       const properties = data.geometry;
       const deltaDistance = properties.delta_distance;
       const coef = properties.coef;
 
       if (deltaDistance && coef && deltaDistance.length === coef.length) {
-        // Calcul élément par élément
         const resultats = deltaDistance.map((dist: number, i: number) => {
           return (dist * coef[i]) / vap;
         });
 
 
-      // Résultats cumulés
         const cumul = resultats.reduce((acc: number[], val: number, i: number) => {
           if (i === 0) {
             acc.push(val);
@@ -176,44 +200,143 @@ export default function Home() {
     .catch((error) => console.error("Erreur de chargement du GeoJSON :", error));
   }, [vap]);
 
+
+
 const extraColumnFn = useMemo(() => {
   if (!resultats) return undefined;
 
-  // tu peux créer une fonction qui va piocher dans le tableau `resultats`
   return (_cum_distance: number, _coef: number, _dist: number, i: number): string => {
     return resultats[i] ?? "-";
   };
 }, [resultats]);
 
 
-//type Point = { lat: number; lng: number };
+type Point = { lat: number; lng: number };
+const [polylinePoints, setPolylinePoints] = useState<Point[]>([]);
 
-//const [polylinePoints, setPolylinePoints] = useState<Point[]>([]);
+useEffect(() => {
+  fetch(geojsonPath)
+    .then((res) => res.json())
+    .then((geojson) => {
+      if (
+        geojson &&
+        geojson.geometry &&
+        geojson.geometry.type === "LineString" &&
+        Array.isArray(geojson.geometry.coordinates)
+      ) {
+        const points = geojson.geometry.coordinates.map((coord: number[]) => ({
+          lng: coord[0],
+          lat: coord[1],
+        }));
+        setPolylinePoints(points);
+      }
+    })
+    .catch((err) => console.error("Erreur de chargement du GeoJSON :", err));
+}, []);
 
-// useEffect(() => {
-//   fetch("/data/combloux_42.geojson")
-//     .then((res) => res.json())
-//     .then((geojson) => {
-//       if (
-//         geojson &&
-//         geojson.geometry &&
-//         geojson.geometry.type === "LineString" &&
-//         Array.isArray(geojson.geometry.coordinates)
-//       ) {
-//         const points = geojson.geometry.coordinates.map((coord: number[]) => ({
-//           lng: coord[0],
-//           lat: coord[1],
-//         }));
-//         setPolylinePoints(points);
-//       }
-//     })
-//     .catch((err) => console.error("Erreur de chargement du GeoJSON :", err));
-// }, []);
+
+// Exemple de données
+
+Chart.register(...registerables);
+
+const [distances, setDistances] = useState<number[]>([]);
+const [altitudes, setAltitudes] = useState<number[]>([]);
+
+useEffect(() => {
+  fetch(geojsonPath)
+    .then((res) => res.json())
+    .then((geojson) => {
+      if (
+        geojson &&
+        geojson.geometry &&
+        geojson.geometry.type === "LineString" &&
+        Array.isArray(geojson.geometry.coordinates)
+      ) {
+        // Utiliser cum_horizontal_distance et altitude du geojson
+        const cumDistances = geojson.geometry.cum_horizontal_distance || [];
+        const alts = geojson.geometry.coordinates.map((coord: number[]) => coord[2] ?? 0);
+
+        setDistances(cumDistances);
+        setAltitudes(alts);
+      }
+    })
+    .catch((err) => console.error("Erreur de chargement du GeoJSON :", err));
+}, [geojsonPath]);
+
+
+
+useEffect(() => {
+  const canvas = document.getElementById('elevationChart') as HTMLCanvasElement | null;
+  
+  if (canvas) {
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      // Destroy previous chart instance if it exists to avoid duplicates
+      if ((window as any).elevationChartInstance) {
+        (window as any).elevationChartInstance.destroy();
+      }
+      
+      (window as any).elevationChartInstance = new Chart(ctx, {
+        type: 'line',
+        
+        data: {
+          labels: distances.map((d) => d / 1000),
+          datasets: [{
+            label: 'Altitude (m)',
+            data: altitudes,
+            borderColor: '#3e95cd',
+            backgroundColor: 'rgba(62,149,205,0.2)',
+            tension: 0.1,
+            pointRadius: 0, // pas de points pour lisser le tracé
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              type: 'linear',
+              title: {
+                display: true,
+                text: 'Distance (km)'
+              }
+            },
+            y: {
+              title: {
+                display: true,
+                text: 'Altitude (m)'
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: false
+            },
+            tooltip: {
+              callbacks: {
+                title: (context: any) => `Distance : ${context[0].label} km`,
+                label: (context: any) => `Altitude : ${context.formattedValue} m`
+              }
+            }
+          }
+        }
+      });
+    }
+  }
+  // Cleanup on unmount
+  return () => {
+    if ((window as any).elevationChartInstance) {
+      (window as any).elevationChartInstance.destroy();
+      (window as any).elevationChartInstance = null;
+    }
+  };
+}, [altitudes, distances]);
+
 
   return (
     <>
       <div className="container">
-        {/* Choix de la course */}
         <section className="choice box">
           <label htmlFor="course-select">Sélectionnez une course :</label>
           <select
@@ -227,14 +350,22 @@ const extraColumnFn = useMemo(() => {
               </option>
             ))}
           </select>
+
+          
         </section>
 
-        {/* Profil de la course */}
+
         <section className="profile box">
           <h2><strong>Profil</strong></h2>
+          
+          <div style={{ height: "200px" }}>
+          <canvas id="elevationChart"></canvas>
+          </div>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
         </section>
 
-        {/* Temps estimé utilisateur */}
+
         <section className="time box">
           <label htmlFor="estimated-time">Entrez votre temps estimé (hh:mm):</label>
           <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
@@ -279,11 +410,10 @@ const extraColumnFn = useMemo(() => {
             />
             </div>
             
-
           </div>
         </section>
 
-        {/* Allure */}
+
         <section className="resume box">
           <h2><strong>Détails</strong></h2>
         
@@ -301,16 +431,14 @@ const extraColumnFn = useMemo(() => {
 
           
         </section>
-
-        {/* Carte de la course
            
-          <div className="map">
-          <DynamicMap />
-          
-          </div> */}
+            <div className="map">
+            <DynamicMap />
+           {/* <Polyline positions={polylinePoints} color="blue" /> */}
+            
+            </div>
        
 
-        {/* Panneau temps ravitos et km */}
         <section className="data box">
           <div style={{ marginBottom: "16px" }}>
             <button
@@ -349,8 +477,13 @@ const extraColumnFn = useMemo(() => {
                 <GeoJsonTable
                     extraColumnName="Temps"
                     extraColumnFn={extraColumnFn}
-                    extraColumnPoint={[10000, 15000, 30000, 40000]}
-                    extraColumnPointName={["Un", "Deux", "Trois", "Quatre"]}
+                    extraColumnPoint={metaData && selected
+                        ? metaData[selected.name.toLowerCase() as keyof typeof metaData].checkpoint_distance
+                        : []}
+                    extraColumnPointName={metaData && selected
+                        ? metaData[selected.name.toLowerCase() as keyof typeof metaData].checkpoint_name
+                        : []}
+                    geojsonPath={geojsonPath}
                   />
 
               </div>
@@ -359,8 +492,16 @@ const extraColumnFn = useMemo(() => {
                 <GeoJsonTable
                     extraColumnName="Temps"
                     extraColumnFn={extraColumnFn}
-                    extraColumnPoint={[10000, 15000, 30000, 40000]}
-                    extraColumnPointName={["Un", "Deux", "Trois", "Quatre"]}
+                    extraColumnPoint={
+                      metaData && selected
+                        ? metaData[selected.name.toLowerCase() as keyof typeof metaData].checkpoint_distance
+                        : []
+                    }
+                    extraColumnPointName={
+                      metaData && selected
+                        ? metaData[selected.name.toLowerCase() as keyof typeof metaData].checkpoint_name
+                        : []
+                    }
                   />
               </div>
             )}
