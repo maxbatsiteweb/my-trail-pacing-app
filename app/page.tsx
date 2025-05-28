@@ -30,22 +30,24 @@ declare global {
   }
 }
 
-const DynamicMap = dynamic(
+const MapComponent = dynamic(
   
   () => import("../components/MapComponent"), // Met ta map dans un fichier séparé, exemple MapComponent.tsx
   { ssr: false } // <-- Désactive le SSR pour ce composant
 );
+
+
+
 
 // Import dynamique du MapContainer et composants Leaflet, désactivé côté serveur
 
 
 
 
-// Correction icône par défaut Leaflet pour Next.js/React
-// import L from "leaflet";
-// import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
-// import markerIcon from "leaflet/dist/images/marker-icon.png";
-// import markerShadow from "leaflet/dist/images/marker-shadow.png";
+//Correction icône par défaut Leaflet pour Next.js/React
+import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
+import markerIcon from "leaflet/dist/images/marker-icon.png";
+import markerShadow from "leaflet/dist/images/marker-shadow.png";
 
 
 
@@ -58,14 +60,15 @@ export default function Home() {
     { id: "course4", name: "S", km: 7, d_plus: 246, d_moins: 246},
   ];
 
-  // useEffect(() => {
-  //   // Cette ligne doit être exécutée uniquement côté client, ici dans useEffect
-  //   L.Icon.Default.mergeOptions({
-  //     iconRetinaUrl: markerIcon2x.src,
-  //     iconUrl: markerIcon.src,
-  //     shadowUrl: markerShadow.src,
-  //   });
-  // }, []);
+ useEffect(() => {
+  const L = require("leaflet"); // <--- IMPORTANT : import dynamique uniquement côté client
+  L.Icon.Default.mergeOptions({
+    iconRetinaUrl: markerIcon2x.src,
+    iconUrl: markerIcon.src,
+    shadowUrl: markerShadow.src,
+  });
+}, []);
+
 
  
 
@@ -79,6 +82,23 @@ export default function Home() {
   const [minutes, setMinutes] = useState("");
   const [seconds, setSeconds] = useState("");
   const [totalSeconds, setTotalSeconds] = useState(0);
+
+  type Coordinate = [number, number, number]; // [lat, lon, alti]
+
+interface GeoJsonData {
+  geometry: {
+    coordinates: Coordinate[];
+    cum_horizontal_distance: number[];
+  };
+}
+
+interface MarkerPoint {
+  name: string;
+  coordinate: Coordinate;
+}
+
+
+
 
 
   type MetaData = {
@@ -166,9 +186,9 @@ export default function Home() {
   let vap_string = "";
 
 
-    const selected = courses.find(c => c.id === selectedCourse);
-    const courseKey = selected ? selected.name.toLowerCase() : ""; 
-    const geojsonPath = courseKey ? `data/races/combloux_${courseKey}.geojson` : "";
+  const selected = courses.find(c => c.id === selectedCourse);
+  const courseKey = selected ? selected.name.toLowerCase() : ""; 
+  const geojsonPath = courseKey ? `data/races/combloux_${courseKey}.geojson` : "";
 
 
   if (metaData) {
@@ -191,6 +211,8 @@ export default function Home() {
       vap_string = "N/A";
    } 
   }
+
+
 
   useEffect(() => {
   fetch(geojsonPath)
@@ -238,28 +260,28 @@ const extraColumnFn = useMemo(() => {
 }, [resultats]);
 
 
-//type Point = { lat: number; lng: number };
-//const [polylinePoints, setPolylinePoints] = useState<Point[]>([]);
+type Point = { lat: number; lng: number };
+const [polylinePoints, setPolylinePoints] = useState<Point[]>([]);
 
-// useEffect(() => {
-//   fetch(geojsonPath)
-//     .then((res) => res.json())
-//     .then((geojson) => {
-//       if (
-//         geojson &&
-//         geojson.geometry &&
-//         geojson.geometry.type === "LineString" &&
-//         Array.isArray(geojson.geometry.coordinates)
-//       ) {
-//         const points = geojson.geometry.coordinates.map((coord: number[]) => ({
-//           lng: coord[0],
-//           lat: coord[1],
-//         }));
-//         setPolylinePoints(points);
-//       }
-//     })
-//     .catch((err) => console.error("Erreur de chargement du GeoJSON :", err));
-// }, []);
+useEffect(() => {
+  fetch(geojsonPath)
+    .then((res) => res.json())
+    .then((geojson) => {
+      if (
+        geojson &&
+        geojson.geometry &&
+        geojson.geometry.type === "LineString" &&
+        Array.isArray(geojson.geometry.coordinates)
+      ) {
+        const points = geojson.geometry.coordinates.map((coord: number[]) => ({
+          lng: coord[0],
+          lat: coord[1],
+        }));
+        setPolylinePoints(points);
+      }
+    })
+    .catch((err) => console.error("Erreur de chargement du GeoJSON :", err));
+}, []);
 
 
 // Exemple de données
@@ -302,6 +324,15 @@ useEffect(() => {
       if (window.elevationChartInstance) {
         window.elevationChartInstance.destroy();
       }
+
+      // Calcul des checkpoints en coordonnées (x: km, y: altitude)
+      const checkpointPoints = checkpointCumulDistances.map((checkpointDist) => {
+        const index = distances.findIndex((d) => d >= checkpointDist);
+        return {
+          x: checkpointDist / 1000,
+          y: altitudes[index] ?? 0,
+        };
+      });
       
       window.elevationChartInstance = new Chart(ctx, {
         type: 'line',
@@ -316,7 +347,17 @@ useEffect(() => {
             tension: 0.1,
             pointRadius: 0, // pas de points pour lisser le tracé
             fill: true
-          }]
+          },
+        {
+              label: 'Checkpoints',
+              data: checkpointPoints,
+              showLine: false,
+              pointStyle: 'circle', // ✨ icône
+              pointRadius: 7,
+              borderColor: 'blue',
+              backgroundColor: 'red',
+              parsing: false, // <-- Ajouté pour indiquer que data est [{x, y}]
+            },]
         },
         options: {
           responsive: true,
@@ -359,6 +400,72 @@ useEffect(() => {
     }
   };
 }, [altitudes, distances]);
+
+
+
+
+function getCoordinatesFromDistances(
+  checkpointDistances: number[],
+  cumDistances: number[],
+  coordinates: Point[]
+): Point[] {
+  return checkpointDistances.map(cpDist => {
+    let closestIndex = 0;
+    let minDiff = Infinity;
+
+    for (let i = 0; i < cumDistances.length; i++) {
+      const diff = Math.abs(cumDistances[i] - cpDist);
+      if (diff < minDiff) {
+        minDiff = diff;
+        closestIndex = i;
+      }
+    }
+
+    return coordinates[closestIndex];
+  });
+}
+
+function getCumulDistancesFromDistances(
+  checkpointDistances: number[],
+  cumDistances: number[],
+): number[] {
+  return checkpointDistances.map(cpDist => {
+    let closestIndex = 0;
+    let minDiff = Infinity;
+
+    for (let i = 0; i < cumDistances.length; i++) {
+      const diff = Math.abs(cumDistances[i] - cpDist);
+      if (diff < minDiff) {
+        minDiff = diff;
+        closestIndex = i;
+      }
+    }
+
+    return cumDistances[closestIndex];
+  });
+}
+
+// Retrieve checkpoint_distance and checkpoint_name from metaData and selected course
+const checkpoint_distance =
+  metaData && selected
+    ? metaData[selected.name.toLowerCase() as keyof typeof metaData].checkpoint_distance
+    : [];
+
+const checkpoint_name =
+  metaData && selected
+    ? metaData[selected.name.toLowerCase() as keyof typeof metaData].checkpoint_name
+    : [];
+
+const checkpointCoords = getCoordinatesFromDistances(
+  checkpoint_distance,
+  distances,
+  polylinePoints
+);
+
+const checkpointCumulDistances = getCumulDistancesFromDistances(
+  checkpoint_distance,
+  distances
+);
 
 
   return (
@@ -460,8 +567,17 @@ useEffect(() => {
         </section>
            
             <div className="map">
-            <DynamicMap />
-           {/* <Polyline positions={polylinePoints} color="blue" /> */}
+            
+            <MapComponent
+              points={polylinePoints.map(p => [p.lat, p.lng])}
+              checkPoints={checkpointCoords.map(p => [p.lat, p.lng])}
+              checkPointsNames={
+                Array.isArray(checkpoint_name) && checkpoint_name.length > 0
+                  ? [checkpoint_name[0]]
+                  : [""]
+              }
+            />
+
             
             </div>
        

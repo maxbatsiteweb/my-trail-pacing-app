@@ -1,36 +1,86 @@
 "use client";
 
-import React, { useEffect } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import L from "leaflet";
+import React, { useEffect, useState } from "react";
+import { MapContainer, TileLayer, Marker, Popup, Polyline } from "react-leaflet";
 
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 
-export default function MapComponent() {
+import { DivIcon } from "leaflet";
+import ReactDOMServer from "react-dom/server";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {faLocationDot } from '@fortawesome/free-solid-svg-icons'
+
+import type { ReactElement } from "react";
+
+const createIcon = (icon: ReactElement) => {
+  return new DivIcon({
+    html: ReactDOMServer.renderToString(icon),
+    className: "",
+    iconSize: [500, 500],
+    iconAnchor: [15, 30],
+  });
+};
+
+const startIcon = createIcon(<FontAwesomeIcon icon={faLocationDot} color="green" style={{ fontSize: '30px' }}/>);
+const finishIcon = createIcon(<FontAwesomeIcon icon={faLocationDot} color="red" style={{ fontSize: '30px' }}/>);
+const checkPointIcon = createIcon(<FontAwesomeIcon icon={faLocationDot} color="blue" style={{ fontSize: '30px' }}/>);
+
+type MapComponentProps = {
+  points: [number, number][];
+  checkPoints: [number, number][];
+  checkPointsNames: [string]
+};
+
+export default function MapComponent({ points, checkPoints, checkPointsNames }: MapComponentProps) {
+  const [leafletLoaded, setLeafletLoaded] = useState(false);
+
   useEffect(() => {
-    L.Icon.Default.mergeOptions({
-      iconRetinaUrl: markerIcon2x.src,
-      iconUrl: markerIcon.src,
-      shadowUrl: markerShadow.src,
+    // Import de leaflet dynamiquement pour éviter les erreurs SSR
+    import("leaflet").then(L => {
+      L.Icon.Default.mergeOptions({
+        iconRetinaUrl: markerIcon2x.src,
+        iconUrl: markerIcon.src,
+        shadowUrl: markerShadow.src,
+      });
+      setLeafletLoaded(true); // pour forcer le rendu seulement après que leaflet est bien chargé
     });
   }, []);
 
+  if (!leafletLoaded) return null; // éviter le rendu avant que Leaflet soit prêt
+
   return (
     <MapContainer
-              center={[45.919, 6.631] as [number, number]}
-              zoom={13}
-              scrollWheelZoom={true}
-              style={{ height: "100%", width: "100%" }}
-            >
-       <TileLayer
-              attribution='&copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-      <Marker position={[45.919, 6.631]}>
-              <Popup>Combloux, Rhône-Alpes</Popup>
-            </Marker>
+      center={points[0] as [number, number]}
+      zoom={12}
+      scrollWheelZoom={true}
+      style={{ height: "100%", width: "100%" }}
+    >
+      <TileLayer
+        attribution='&copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+
+      <Polyline positions={points} color="blue" />
+
+      {points.length > 0 && (
+        <Marker position={points[0]} icon={startIcon}>
+          <Popup>Départ</Popup>
+        </Marker>
+      )}
+
+      {points.length > 1 && (
+        <Marker position={points[points.length - 1] } icon={finishIcon}>
+          <Popup>Arrivée</Popup>
+        </Marker>
+      )}
+
+      {checkPoints.map((pos, idx) => (
+        <Marker key={idx} position={pos} icon={checkPointIcon}>
+          <Popup>{checkPointsNames[idx]}</Popup>
+        </Marker>
+      ))}
 
     </MapContainer>
   );
