@@ -55,7 +55,7 @@ export default function MapComponent({ points, checkPoints, checkPointsNames }: 
   return (
     <MapContainer
       center={points[0] as [number, number]}
-      zoom={12}
+      zoom={0}
       scrollWheelZoom={true}
       style={{ height: "100%", width: "100%" }}
     >
