@@ -53,11 +53,24 @@ export default function MapComponent({ points, checkPoints, checkPointsNames }: 
 
 function MapInvalidateSize() {
   const map = useMap();
+
   useEffect(() => {
-    setTimeout(() => {
-      map.invalidateSize();
-    }, 500); // petit délai pour laisser le DOM se stabiliser
+    const resize = () => {
+      const container = map?.getContainer();
+      if (container && container.offsetHeight > 0) {
+        map.invalidateSize();
+      }
+    };
+
+    const timeout = setTimeout(resize, 500); // plus long
+    window.addEventListener('resize', resize);
+
+    return () => {
+      clearTimeout(timeout);
+      window.removeEventListener('resize', resize);
+    };
   }, [map]);
+
   return null;
 }
 
