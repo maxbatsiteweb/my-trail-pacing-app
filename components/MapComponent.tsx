@@ -11,6 +11,7 @@ import { DivIcon } from "leaflet";
 import ReactDOMServer from "react-dom/server";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {faLocationDot } from '@fortawesome/free-solid-svg-icons'
+import { useMap } from 'react-leaflet';
 
 import type { ReactElement } from "react";
 
@@ -50,7 +51,15 @@ export default function MapComponent({ points, checkPoints, checkPointsNames }: 
 
   if (!leafletLoaded) return null; // éviter le rendu avant que Leaflet soit prêt
 
-  console.log("check", checkPointsNames)
+function MapInvalidateSize() {
+  const map = useMap();
+  useEffect(() => {
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 100); // petit délai pour laisser le DOM se stabiliser
+  }, [map]);
+  return null;
+}
 
   return (
     <MapContainer
@@ -90,6 +99,8 @@ export default function MapComponent({ points, checkPoints, checkPointsNames }: 
             </Tooltip>
         </Marker>
       ))}
+
+      <MapInvalidateSize />
 
     </MapContainer>
   );
