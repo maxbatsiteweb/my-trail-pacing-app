@@ -5,7 +5,7 @@ import "leaflet/dist/leaflet.css";
 import dynamic from "next/dynamic";
 import GeoJsonTable from "@/components/PacingCalculator";
 import Header from "@/components/Header"; 
-import { TooltipItem,Chart,
+import { TooltipItem, Chart,
   LineController,
   LineElement,
   PointElement,
@@ -14,9 +14,9 @@ import { TooltipItem,Chart,
   Tooltip,
   CategoryScale,
   registerables,
-  Filler } from 'chart.js';
-import {
-  
+  Filler,
+  ChartDataset,
+  ScatterDataPoint
 } from 'chart.js';
 
 // Register components
@@ -327,31 +327,35 @@ useEffect(() => {
           y: altitudes[index] ?? 0,
         };
       });
+
+      const lineDataset: ChartDataset<'line', number[]> = {
+          label: 'Altitude (m)',
+          data: altitudes,
+          borderColor: '#3e95cd',
+          backgroundColor: 'rgba(62,149,205,0.2)',
+          tension: 0.1,
+          pointRadius: 0,
+          fill: true,
+        };
+
+        const scatterDataset: ChartDataset<'scatter', ScatterDataPoint[]> = {
+          type: 'scatter',
+          label: 'Checkpoints',
+          data: checkpointPoints,
+          showLine: false,
+          pointStyle: 'star',
+          pointRadius: 7,
+          borderColor: 'blue',
+          backgroundColor: 'red',
+          parsing: false,
+        };
       
       window.elevationChartInstance = new Chart(ctx, {
         type: 'line',
         
         data: {
           labels: distances.map((d) => d / 1000),
-          datasets: [{
-            label: 'Altitude (m)',
-            data: altitudes,
-            borderColor: '#3e95cd',
-            backgroundColor: 'rgba(62,149,205,0.2)',
-            tension: 0.1,
-            pointRadius: 0, // pas de points pour lisser le tracé
-            fill: true
-          },
-        {
-              label: 'Checkpoints',
-              data: checkpointPoints,
-              showLine: false,
-              pointStyle: 'circle', // ✨ icône
-              pointRadius: 7,
-              borderColor: 'blue',
-              backgroundColor: 'red',
-              parsing: false, // <-- Ajouté pour indiquer que data est [{x, y}]
-            },]
+          datasets: [lineDataset, scatterDataset]
         },
         options: {
           responsive: true,
