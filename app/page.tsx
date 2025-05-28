@@ -590,7 +590,7 @@ useEffect(() => {
             <br />
             Temps estimé : <strong>{secondsToHHMMSS(totalSeconds)}</strong><br /> 
             <div className="tooltip-wrapper">
-              Allure ajustée à la pente et au terrain: <strong>{vap_string}  </strong> 
+              Allure ajustée: <strong>{vap_string}  </strong> 
               <div className="tooltip-icon">?</div>
               <div className="tooltip-text">Ceci est votre l&apos;allure normalisée, si le terrain est plat et facile</div>
             </div> <br />

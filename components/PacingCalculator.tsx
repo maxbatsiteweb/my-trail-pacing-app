@@ -100,7 +100,7 @@ useEffect(() => {
       <thead className="bg-gray-100 sticky top-0">
         <tr>
           <th className="px-2 py-1 text-left">Point</th>
-          <th className="px-2 py-1 text-left">Distance</th>
+          <th className="px-2 py-1 text-left">Km</th>
           <th className="px-2 py-1 text-left">D +</th>
           <th className="px-2 py-1 text-left">D -</th>
           {extraColumnName && (

@@ -162,3 +162,13 @@ select, input {
   max-width: 100%;
   overflow-x: hidden;
 }
+
+.map {
+  height: 300px; /* ou auto si contenu variable */
+}
+
+.leaflet-container {
+  height: 100% !important;
+  max-height: 100%;
+}
+
