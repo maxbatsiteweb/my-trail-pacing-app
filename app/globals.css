@@ -149,3 +149,16 @@ select, input {
   border-style: solid;
   border-color: #222 transparent transparent transparent;
 }
+
+.container > * {
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.leaflet-container {
+  width: 100% !important;
+  max-width: 100%;
+  overflow-x: hidden;
+}
