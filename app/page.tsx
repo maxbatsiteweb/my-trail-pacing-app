@@ -60,12 +60,23 @@ export default function Home() {
     { id: "course4", name: "S", km: 7, d_plus: 246, d_moins: 246},
   ];
 
- useEffect(() => {
-  const L = require("leaflet"); // <--- IMPORTANT : import dynamique uniquement côté client
+
+import("leaflet").then((L) => {
   L.Icon.Default.mergeOptions({
     iconRetinaUrl: markerIcon2x.src,
     iconUrl: markerIcon.src,
     shadowUrl: markerShadow.src,
+  });
+});
+
+
+useEffect(() => {
+  import("leaflet").then((L) => {
+    L.Icon.Default.mergeOptions({
+      iconRetinaUrl: markerIcon2x.src,
+      iconUrl: markerIcon.src,
+      shadowUrl: markerShadow.src,
+    });
   });
 }, []);
 
