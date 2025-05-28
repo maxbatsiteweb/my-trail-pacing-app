@@ -94,24 +94,7 @@ useEffect(() => {
   const [seconds, setSeconds] = useState("");
   const [totalSeconds, setTotalSeconds] = useState(0);
 
-  type Coordinate = [number, number, number]; // [lat, lon, alti]
-
-interface GeoJsonData {
-  geometry: {
-    coordinates: Coordinate[];
-    cum_horizontal_distance: number[];
-  };
-}
-
-interface MarkerPoint {
-  name: string;
-  coordinate: Coordinate;
-}
-
-
-
-
-
+ 
   type MetaData = {
     xl: {
       difficulty: number;
