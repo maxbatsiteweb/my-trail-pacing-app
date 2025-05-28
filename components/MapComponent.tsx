@@ -70,8 +70,8 @@ function MapInvalidateSize() {
     >
       <MapInvalidateSize />
       <TileLayer
-        attribution='&copy; <a href="https://carto.com/attributions">CARTO</a> | &copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
-    url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+        attribution='&copy; OpenStreetMap contributors'
+    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
       <Polyline positions={points} color="blue" />
