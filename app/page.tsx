@@ -89,8 +89,6 @@ useEffect(() => {
 
 
   const [selectedCourse, setSelectedCourse] = useState(courses[0].id);
-  const [activeTab, setActiveTab] = useState<"ravitos" | "kilometre">("ravitos");
-
   const [hours, setHours] = useState("");
   const [minutes, setMinutes] = useState("");
   const [seconds, setSeconds] = useState("");
