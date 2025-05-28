@@ -21,6 +21,7 @@ import { Chart,
 
 
 
+
 // Register components
 Chart.register(LineController, LineElement, PointElement, LinearScale, Title, Tooltip, CategoryScale, Filler);
 
