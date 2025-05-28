@@ -126,19 +126,29 @@ select, input {
   opacity: 0;
   transition: opacity 0.3s ease;
   position: absolute;
-  bottom: 125%;
+  bottom: 125%; /* au-dessus */
   left: 50%;
   transform: translateX(-50%);
   background-color: #222;
   color: #fff;
   padding: 6px 10px;
   border-radius: 4px;
-  white-space: nowrap;
+  white-space: normal; /* autoriser retour à la ligne */
+  max-width: 80vw; /* max 80% de la largeur viewport */
   font-size: 14px;
   z-index: 10;
   pointer-events: none;
+  word-wrap: break-word;
 }
 
+.tooltip-text[data-edge="left"] {
+  left: 0;
+  transform: translateX(0);
+  white-space: normal;
+}
+
+
+/* Toujours garder la petite flèche en bas */
 .tooltip-text::after {
   content: "";
   position: absolute;
