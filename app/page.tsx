@@ -592,7 +592,7 @@ useEffect(() => {
             <div className="tooltip-wrapper">
               Allure ajustée: <strong>{vap_string}  </strong> 
               <div className="tooltip-icon">?</div>
-              <div className="tooltip-text">Ceci est votre l&apos;allure normalisée, si le terrain est plat et facile</div>
+              <div className="tooltip-text">Ceci est l&apos;allure normalisée, si le terrain est plat et facile</div>
             </div> <br />
 
             Distance : <strong>{courses.find((c) => c.id === selectedCourse)?.km} Km</strong><br />
