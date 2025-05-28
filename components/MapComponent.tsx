@@ -56,7 +56,7 @@ function MapInvalidateSize() {
   useEffect(() => {
     setTimeout(() => {
       map.invalidateSize();
-    }, 100); // petit délai pour laisser le DOM se stabiliser
+    }, 500); // petit délai pour laisser le DOM se stabiliser
   }, [map]);
   return null;
 }
