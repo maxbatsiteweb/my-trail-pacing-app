@@ -308,101 +308,6 @@ useEffect(() => {
 
 
 
-useEffect(() => {
-  const canvas = document.getElementById('elevationChart') as HTMLCanvasElement | null;
-  
-  if (canvas) {
-    const ctx = canvas.getContext('2d');
-    if (ctx) {
-      // Destroy previous chart instance if it exists to avoid duplicates
-      if (window.elevationChartInstance) {
-        window.elevationChartInstance.destroy();
-      }
-
-      // Calcul des checkpoints en coordonnées (x: km, y: altitude)
-      const checkpointPoints: ScatterDataPoint[] = checkpointCumulDistances.map((checkpointDist) => {
-        const index = distances.findIndex((d) => d >= checkpointDist);
-        return {
-          x: checkpointDist / 1000,
-          y: altitudes[index] ?? 0,
-        };
-      });
-
-      const lineDataset: ChartDataset<'line', number[]> = {
-        label: 'Altitude (m)',
-        data: altitudes,
-        borderColor: '#3e95cd',
-        backgroundColor: 'rgba(62,149,205,0.2)',
-        tension: 0.1,
-        pointRadius: 0,
-        fill: true,
-      };
-
-      // Use ChartDataset<'line', number[]> for line, and ChartDataset<'scatter', ScatterDataPoint[]> for scatter
-      const scatterDataset: ChartDataset<'scatter', ScatterDataPoint[]> = {
-        type: 'scatter',
-        label: 'Checkpoints',
-        data: checkpointPoints,
-        showLine: false,
-        pointStyle: 'star',
-        pointRadius: 7,
-        borderColor: 'blue',
-        backgroundColor: 'red',
-        parsing: false,
-      };
-
-      window.elevationChartInstance = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: distances.map((d) => d / 1000),
-          // Type assertion to allow mixed dataset types
-          datasets: [lineDataset, scatterDataset] as ChartDataset<'line' | 'scatter', number[] | ScatterDataPoint[]>[]
-
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            x: {
-              type: 'linear',
-              title: {
-                display: true,
-                text: 'Distance (km)'
-              }
-            },
-            y: {
-              title: {
-                display: true,
-                text: 'Altitude (m)'
-              }
-            }
-          },
-          plugins: {
-            legend: {
-              display: false
-            },
-            tooltip: {
-              callbacks: {
-                  title: (context: TooltipItem<'line'>[]) => `Distance : ${context[0].label} km`,
-                  label: (context: TooltipItem<'line'>) => `Altitude : ${context.formattedValue} m`
-              }
-            }
-          }
-        }
-      });
-    }
-  }
-  // Cleanup on unmount
-  return () => {
-    if (window.elevationChartInstance) {
-      window.elevationChartInstance.destroy();
-      window.elevationChartInstance = undefined;
-    }
-  };
-}, [altitudes, distances]);
-
-
-
 
 function getCoordinatesFromDistances(
   checkpointDistances: number[],
@@ -466,6 +371,137 @@ const checkpointCumulDistances = getCumulDistancesFromDistances(
   checkpoint_distance,
   distances
 );
+
+const drawLabelsPlugin = {
+  id: 'drawLabels',
+  afterDatasetsDraw(chart: Chart) {
+    const ctx = chart.ctx;
+    const dataset = chart.data.datasets.find(d => d.label === 'Checkpoints');
+    if (!dataset) return;
+
+    const meta = chart.getDatasetMeta(chart.data.datasets.indexOf(dataset));
+
+    ctx.save();
+    ctx.font = '15px Arial';
+    ctx.fillStyle = 'black';
+    ctx.textAlign = 'center';
+
+    meta.data.forEach((point, index) => {
+      const label = checkpoint_name[index] || '';
+      if (label) {
+        // Position du texte : au-dessus du point (point.y - 10)
+        ctx.fillText(label, point.x, point.y - 10);
+      }
+    });
+
+    ctx.restore();
+  }
+};
+
+
+
+useEffect(() => {
+  const canvas = document.getElementById('elevationChart') as HTMLCanvasElement | null;
+  
+  if (canvas) {
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      // Destroy previous chart instance if it exists to avoid duplicates
+      if (window.elevationChartInstance) {
+        window.elevationChartInstance.destroy();
+      }
+
+      // Calcul des checkpoints en coordonnées (x: km, y: altitude)
+      const checkpointPoints: ScatterDataPoint[] = checkpointCumulDistances.map((checkpointDist) => {
+        const index = distances.findIndex((d) => d >= checkpointDist);
+        return {
+          x: checkpointDist / 1000,
+          y: altitudes[index] ?? 0,
+        };
+      });
+
+      const lineDataset: ChartDataset<'line', number[]> = {
+        label: 'Altitude (m)',
+        data: altitudes,
+        borderColor: '#3e95cd',
+        backgroundColor: 'rgba(62,149,205,0.2)',
+        tension: 0.1,
+        pointRadius: 0,
+        fill: true,
+      };
+
+      
+
+      // Use ChartDataset<'line', number[]> for line, and ChartDataset<'scatter', ScatterDataPoint[]> for scatter
+      const scatterDataset: ChartDataset<'scatter', ScatterDataPoint[]> = {
+        type: 'scatter',
+        label: 'Checkpoints',
+        data: checkpointPoints,
+        showLine: false,
+        pointStyle: 'circle',
+        pointRadius: 5,
+        borderColor: 'red',
+        backgroundColor: 'red',
+        parsing: false,
+      };
+
+      window.elevationChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: distances.map((d) => d / 1000),
+          // Type assertion to allow mixed dataset types
+          datasets: [lineDataset, scatterDataset] as ChartDataset<'line' | 'scatter', number[] | ScatterDataPoint[]>[]
+
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              type: 'linear',
+              title: {
+                display: true,
+                text: 'Distance (km)'
+              }
+            },
+            y: {
+              title: {
+                display: true,
+                text: 'Altitude (m)'
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: false
+            },
+            tooltip: {
+              callbacks: {
+                // titre : afficher la distance (x)
+                title: (context) => {
+                  // context[0].parsed.x contient la distance en km
+                  return `Distance : ${context[0].parsed.x.toFixed(2)} km`;
+                },
+                // label : afficher l'altitude (y)
+                label: (context) => {
+                  return `Altitude : ${context.parsed.y} m`;
+                }
+              }
+            }
+          }
+        },
+        plugins: [drawLabelsPlugin], // <--- ajoute ton plugin custom ici
+      });
+    }
+  }
+  // Cleanup on unmount
+  return () => {
+    if (window.elevationChartInstance) {
+      window.elevationChartInstance.destroy();
+      window.elevationChartInstance = undefined;
+    }
+  };
+}, [altitudes, distances]);
 
 
   return (
@@ -571,16 +607,16 @@ const checkpointCumulDistances = getCumulDistancesFromDistances(
             <MapComponent
               points={polylinePoints.map(p => [p.lat, p.lng])}
               checkPoints={
-  Array.isArray(checkpointCoords)
-    ? checkpointCoords
-        .filter((p) => p && typeof p.lat === 'number' && typeof p.lng === 'number')
-        .map((p) => [p.lat, p.lng])
-    : []
-}
+                  Array.isArray(checkpointCoords)
+                    ? checkpointCoords
+                        .filter((p) => p && typeof p.lat === 'number' && typeof p.lng === 'number')
+                        .map((p) => [p.lat, p.lng])
+                    : []
+                }
 
               checkPointsNames={
                 Array.isArray(checkpoint_name) && checkpoint_name.length > 0
-                  ? [checkpoint_name[0]]
+                  ? checkpoint_name
                   : [""]
               }
             />

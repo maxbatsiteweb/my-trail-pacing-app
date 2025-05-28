@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup, Polyline } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, Polyline, Tooltip } from "react-leaflet";
 
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
@@ -30,7 +30,7 @@ const checkPointIcon = createIcon(<FontAwesomeIcon icon={faLocationDot} color="b
 type MapComponentProps = {
   points: [number, number][];
   checkPoints: [number, number][];
-  checkPointsNames: [string]
+  checkPointsNames: string[]
 };
 
 export default function MapComponent({ points, checkPoints, checkPointsNames }: MapComponentProps) {
@@ -50,6 +50,8 @@ export default function MapComponent({ points, checkPoints, checkPointsNames }: 
 
   if (!leafletLoaded) return null; // éviter le rendu avant que Leaflet soit prêt
 
+  console.log("check", checkPointsNames)
+
   return (
     <MapContainer
       center={points[0] as [number, number]}
@@ -66,19 +68,26 @@ export default function MapComponent({ points, checkPoints, checkPointsNames }: 
 
       {points.length > 0 && (
         <Marker position={points[0]} icon={startIcon}>
-          <Popup>Départ</Popup>
+          <Tooltip  direction="top" offset={[0, -10]}>
+              Départ
+            </Tooltip>
         </Marker>
       )}
 
       {points.length > 1 && (
         <Marker position={points[points.length - 1] } icon={finishIcon}>
-          <Popup>Arrivée</Popup>
+          <Tooltip  direction="top" offset={[0, -10]}>
+                Arrivée
+              </Tooltip>
         </Marker>
       )}
 
+
       {checkPoints.map((pos, idx) => (
         <Marker key={idx} position={pos} icon={checkPointIcon}>
-          <Popup>{checkPointsNames[idx]}</Popup>
+          <Tooltip  direction="top" offset={[0, -10]} interactive={false}>
+              {checkPointsNames[idx]}
+            </Tooltip>
         </Marker>
       ))}
 
