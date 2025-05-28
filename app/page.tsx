@@ -19,6 +19,8 @@ import { TooltipItem, Chart,
   ScatterDataPoint
 } from 'chart.js';
 
+
+
 // Register components
 Chart.register(LineController, LineElement, PointElement, LinearScale, Title, Tooltip, CategoryScale, Filler);
 
@@ -356,7 +358,8 @@ useEffect(() => {
         data: {
           labels: distances.map((d) => d / 1000),
           // Type assertion to allow mixed dataset types
-          datasets: [lineDataset, scatterDataset] as any[]
+          datasets: [lineDataset, scatterDataset] as ChartDataset<'line' | 'scatter', number[] | ScatterDataPoint[]>[]
+
         },
         options: {
           responsive: true,
@@ -582,40 +585,10 @@ const checkpointCumulDistances = getCumulDistancesFromDistances(
        
 
         <section className="data box">
-          <div style={{ marginBottom: "16px" }}>
-            <button
-              type="button"
-              onClick={() => setActiveTab("ravitos")}
-              style={{
-                padding: "8px 16px",
-                border: "none",
-                borderBottom: activeTab === "ravitos" ? "2px solid #0070f3" : "2px solid transparent",
-                background: "none",
-                fontWeight: activeTab === "ravitos" ? "bold" : "normal",
-                cursor: "pointer",
-                marginRight: "8px"
-              }}
-            >
-              Temps aux ravitos
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab("kilometre")}
-              style={{
-                padding: "8px 16px",
-                border: "none",
-                borderBottom: activeTab === "kilometre" ? "2px solid #0070f3" : "2px solid transparent",
-                background: "none",
-                fontWeight: activeTab === "kilometre" ? "bold" : "normal",
-                cursor: "pointer"
-              }}
-            >
-              Temps par kilomètre
-            </button>
-          </div>
+          <h2><strong>Points de passage</strong></h2>
+
+
           <div>
-            {activeTab === "ravitos" ? (
-              <div>
                 <GeoJsonTable
                     extraColumnName="Temps"
                     extraColumnFn={extraColumnFn}
@@ -629,25 +602,7 @@ const checkpointCumulDistances = getCumulDistancesFromDistances(
                   />
 
               </div>
-            ) : (
-              <div>
-                <GeoJsonTable
-                    extraColumnName="Temps"
-                    extraColumnFn={extraColumnFn}
-                    extraColumnPoint={
-                      metaData && selected
-                        ? metaData[selected.name.toLowerCase() as keyof typeof metaData].checkpoint_distance
-                        : []
-                    }
-                    extraColumnPointName={
-                      metaData && selected
-                        ? metaData[selected.name.toLowerCase() as keyof typeof metaData].checkpoint_name
-                        : []
-                    }
-                  />
-              </div>
-            )}
-          </div>
+
 
         </section>
       </div>
