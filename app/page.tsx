@@ -570,7 +570,14 @@ const checkpointCumulDistances = getCumulDistancesFromDistances(
             
             <MapComponent
               points={polylinePoints.map(p => [p.lat, p.lng])}
-              checkPoints={checkpointCoords.map(p => [p.lat, p.lng])}
+              checkPoints={
+  Array.isArray(checkpointCoords)
+    ? checkpointCoords
+        .filter((p) => p && typeof p.lat === 'number' && typeof p.lng === 'number')
+        .map((p) => [p.lat, p.lng])
+    : []
+}
+
               checkPointsNames={
                 Array.isArray(checkpoint_name) && checkpoint_name.length > 0
                   ? [checkpoint_name[0]]
