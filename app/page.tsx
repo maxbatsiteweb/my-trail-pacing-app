@@ -320,7 +320,7 @@ useEffect(() => {
       }
 
       // Calcul des checkpoints en coordonnées (x: km, y: altitude)
-      const checkpointPoints = checkpointCumulDistances.map((checkpointDist) => {
+      const checkpointPoints: ScatterDataPoint[] = checkpointCumulDistances.map((checkpointDist) => {
         const index = distances.findIndex((d) => d >= checkpointDist);
         return {
           x: checkpointDist / 1000,
@@ -329,33 +329,34 @@ useEffect(() => {
       });
 
       const lineDataset: ChartDataset<'line', number[]> = {
-          label: 'Altitude (m)',
-          data: altitudes,
-          borderColor: '#3e95cd',
-          backgroundColor: 'rgba(62,149,205,0.2)',
-          tension: 0.1,
-          pointRadius: 0,
-          fill: true,
-        };
+        label: 'Altitude (m)',
+        data: altitudes,
+        borderColor: '#3e95cd',
+        backgroundColor: 'rgba(62,149,205,0.2)',
+        tension: 0.1,
+        pointRadius: 0,
+        fill: true,
+      };
 
-        const scatterDataset: ChartDataset<'scatter', ScatterDataPoint[]> = {
-          type: 'scatter',
-          label: 'Checkpoints',
-          data: checkpointPoints,
-          showLine: false,
-          pointStyle: 'star',
-          pointRadius: 7,
-          borderColor: 'blue',
-          backgroundColor: 'red',
-          parsing: false,
-        };
-      
+      // Use ChartDataset<'line', number[]> for line, and ChartDataset<'scatter', ScatterDataPoint[]> for scatter
+      const scatterDataset: ChartDataset<'scatter', ScatterDataPoint[]> = {
+        type: 'scatter',
+        label: 'Checkpoints',
+        data: checkpointPoints,
+        showLine: false,
+        pointStyle: 'star',
+        pointRadius: 7,
+        borderColor: 'blue',
+        backgroundColor: 'red',
+        parsing: false,
+      };
+
       window.elevationChartInstance = new Chart(ctx, {
         type: 'line',
-        
         data: {
           labels: distances.map((d) => d / 1000),
-          datasets: [lineDataset, scatterDataset]
+          // Type assertion to allow mixed dataset types
+          datasets: [lineDataset, scatterDataset] as any[]
         },
         options: {
           responsive: true,
