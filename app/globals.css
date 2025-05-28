@@ -19,11 +19,16 @@
 html, body {
   margin: 0;
   padding: 0;
-  overflow-x: hidden; /* Evite scroll horizontal */
+  overflow-x: hidden;
   font-family: Arial, Helvetica, sans-serif;
   background: var(--background);
   color: var(--foreground);
   box-sizing: border-box;
+  height: 100%;
+}
+
+body {
+  min-height: 100vh;
 }
 
 /* ============ Layout ============ */
@@ -39,9 +44,15 @@ html, body {
     "resume"
     "data"
     "profile"
-    "map"
-    ;
+    "map";
 }
+
+.choice  { grid-area: choice; }
+.profile { grid-area: profile; }
+.time    { grid-area: time; }
+.map     { grid-area: map; }
+.resume  { grid-area: resume; }
+.data    { grid-area: data; }
 
 /* Desktop layout */
 @media (min-width: 768px) {
@@ -52,15 +63,19 @@ html, body {
       "time profile"
       "resume map"
       "data map";
+    align-items: stretch;
+  }
+
+  .map {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .leaflet-container {
+    flex-grow: 1;
+    height: 100% !important;
   }
 }
-
-.choice  { grid-area: choice; }
-.profile { grid-area: profile; }
-.time    { grid-area: time; }
-.map     { grid-area: map; }
-.resume  { grid-area: resume; }
-.data    { grid-area: data; }
 
 /* ============ Elements UI ============ */
 .box {
@@ -68,6 +83,7 @@ html, body {
   padding: 15px;
   border-radius: 8px;
   background: #fafafa;
+  box-sizing: border-box;
 }
 
 label {
@@ -86,9 +102,11 @@ select, input {
 
 /* ============ Leaflet ============ */
 .leaflet-container {
+  width: 100% !important;
+  max-width: 100%;
   height: 300px;
-  width: 100%;
   border-radius: 8px;
+  overflow-x: hidden;
 }
 
 /* ============ Tooltips ============ */
@@ -98,6 +116,7 @@ select, input {
   gap: 6px;
   font-size: 16px;
   position: relative;
+  flex-wrap: wrap;
 }
 
 .tooltip-icon {
@@ -126,15 +145,15 @@ select, input {
   opacity: 0;
   transition: opacity 0.3s ease;
   position: absolute;
-  bottom: 125%; /* au-dessus */
+  bottom: 125%;
   left: 50%;
   transform: translateX(-50%);
   background-color: #222;
   color: #fff;
   padding: 6px 10px;
   border-radius: 4px;
-  white-space: normal; /* autoriser retour à la ligne */
-  max-width: 80vw; /* max 80% de la largeur viewport */
+  white-space: normal;
+  max-width: 80vw;
   font-size: 14px;
   z-index: 10;
   pointer-events: none;
@@ -147,8 +166,6 @@ select, input {
   white-space: normal;
 }
 
-
-/* Toujours garder la petite flèche en bas */
 .tooltip-text::after {
   content: "";
   position: absolute;
@@ -160,25 +177,10 @@ select, input {
   border-color: #222 transparent transparent transparent;
 }
 
+/* ============ Global container fix ============ */
 .container > * {
   min-width: 0;
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
 }
-
-.leaflet-container {
-  width: 100% !important;
-  max-width: 100%;
-  overflow-x: hidden;
-}
-
-.map {
-  height: 300px; /* ou auto si contenu variable */
-}
-
-.leaflet-container {
-  height: 100% !important;
-  max-height: 100%;
-}
-
