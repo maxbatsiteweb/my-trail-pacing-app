@@ -602,7 +602,7 @@ useEffect(() => {
           
         </section>
            
-            <div className="map">
+            <div className="map overflow-hidden">
             
             <MapComponent
               points={polylinePoints.map(p => [p.lat, p.lng])}
