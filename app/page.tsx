@@ -5,7 +5,7 @@ import "leaflet/dist/leaflet.css";
 import dynamic from "next/dynamic";
 import GeoJsonTable from "@/components/PacingCalculator";
 import Header from "@/components/Header"; 
-import { TooltipItem, Chart,
+import { Chart,
   LineController,
   LineElement,
   PointElement,
