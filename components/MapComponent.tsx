@@ -68,6 +68,7 @@ function MapInvalidateSize() {
       scrollWheelZoom={true}
       style={{ height: "100%", width: "100%" }}
     >
+      <MapInvalidateSize />
       <TileLayer
         attribution='&copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -100,7 +101,7 @@ function MapInvalidateSize() {
         </Marker>
       ))}
 
-      <MapInvalidateSize />
+      
 
     </MapContainer>
   );
