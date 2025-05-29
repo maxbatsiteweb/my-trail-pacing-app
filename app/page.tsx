@@ -90,9 +90,9 @@ useEffect(() => {
 
 
   const [selectedCourse, setSelectedCourse] = useState(courses[0].id);
-  const [hours, setHours] = useState("");
-  const [minutes, setMinutes] = useState("");
-  const [seconds, setSeconds] = useState("");
+  const [hours, setHours] = useState("1");
+  const [minutes, setMinutes] = useState("0");
+  const [seconds, setSeconds] = useState("0");
   const [totalSeconds, setTotalSeconds] = useState(0);
 
  

@@ -40,6 +40,7 @@ body {
   max-width: 100%;
   grid-template-columns: 1fr;
   box-sizing: border-box;
+  overflow-x: hidden;
   grid-template-areas:
     "choice"
     "time"
@@ -184,13 +185,49 @@ select, input {
 }
 
 /* ============ Global container fix ============ */
-.container > * {
+.main-container > * {
   min-width: 0;
   /*width: 100%;*/
   max-width: 100%;
   box-sizing: border-box;
 }
 
+
+
 .map, .profile, .resume, .data {
   width: 100%;
 }
+
+
+
+
+
+
+header {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+header > div {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem; /* équivalent space-x-6 */
+  flex-wrap: wrap; /* autorise passage à la ligne */
+  min-width: 0; /* important pour que les enfants rétrécissent */
+}
+
+nav {
+  display: flex;
+  gap: 1rem; /* équivalent space-x-4 */
+  min-width: 0; /* important */
+  overflow-x: auto; /* pour scroll si trop large */
+}
+
+nav a {
+  white-space: nowrap; /* éviter retour à la ligne au milieu du lien */
+  flex-shrink: 1; /* autorise réduction */
+  min-width: 0; /* important */
+}
+
