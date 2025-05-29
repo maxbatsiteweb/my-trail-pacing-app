@@ -42,10 +42,14 @@ useEffect(() => {
 
         let selectedIndices: number[] = [];
 
+        console.log("extra", extraColumnPoint)
+
         if (extraColumnPoint && extraColumnPoint.length > 0) {
           selectedIndices = extraColumnPoint.map((target) => {
             let closestIndex = 0;
             let minDiff = Infinity;
+
+            console.log("distance", cum_distance)
 
             cum_distance.forEach((val: number, i: number) => {
               const diff: number = Math.abs(val - (target as number));
@@ -63,6 +67,8 @@ useEffect(() => {
 
         const uniqueIndices = [...new Set(selectedIndices)];
 
+        console.log("row", uniqueIndices)
+
         const filteredRows = uniqueIndices.map((i, idx) => {
           const cumDistKm = cum_distance[i] / 1000;
           const roundedCumDist = Math.round(cumDistKm * 100) / 100;
@@ -73,6 +79,8 @@ useEffect(() => {
             dist: Math.round(dist[i]),
             pointName: String(extraColumnPointName?.[idx] ?? ""), // associer le nom si dispo
           };
+
+      
 
           return extraColumnFn
             ? {

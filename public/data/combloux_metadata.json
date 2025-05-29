@@ -1,23 +1,23 @@
 {
   "xl": {
     "difficulty": 69270.79896736509,
-    "checkpoint_distance":[10000, 15000, 30000, 40000],
-    "checkpoint_name" : ["test_1", "test_2", "test_3", "test_4"]
+    "checkpoint_distance":[12000, 23800, 32800, 37000],
+    "checkpoint_name" : ["Cabane du Petit Pâtre", "Plan de la Giettaz", "Les Plaines", "Sommet des Salles"]
   },
   "l": {
-    "difficulty": 2000,
-    "checkpoint_distance":[10000, 15000, 30000, 40000],
-    "checkpoint_name" : ["test_5", "test_6", "test_3", "test_4"]
+    "difficulty": 34362.36721169952,
+    "checkpoint_distance":[12000, 16660],
+    "checkpoint_name" : ["Cabane du Petit Pâtre", "Sommet des Salles"]
     
   },
   "m": {
-    "difficulty": 1000,
-    "checkpoint_distance":[10000, 15000, 30000, 40000],
-    "checkpoint_name" : ["test_7", "test_2", "test_3", "test_4"]
+    "difficulty": 23100.68163562219,
+    "checkpoint_distance":[9720],
+    "checkpoint_name" : ["Sommet des Salles"]
   },
   "s": {
-    "difficulty": 500,
-    "checkpoint_distance":[10000, 15000, 30000, 40000],
-    "checkpoint_name" : ["test_99", "test_2", "test_3", "test_4"]
+    "difficulty": 8255.362566414788,
+    "checkpoint_distance":[3500],
+    "checkpoint_name" : ["Mi-course"]
   }
 }

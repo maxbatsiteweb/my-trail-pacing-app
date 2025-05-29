@@ -20,8 +20,6 @@ import { Chart,
 } from 'chart.js';
 
 
-
-
 // Register components
 Chart.register(LineController, LineElement, PointElement, LinearScale, Title, Tooltip, CategoryScale, Filler);
 
@@ -57,10 +55,10 @@ import markerShadow from "leaflet/dist/images/marker-shadow.png";
 
 export default function Home() {
   const courses = [
-    { id: "course1", name: "XL", km: 42.9, d_plus: 2832, d_moins: 2832},
-    { id: "course2", name: "L", km: 25, d_plus: 1586, d_moins: 1586},
-    { id: "course3", name: "M", km: 15, d_plus: 982, d_moins: 982},
-    { id: "course4", name: "S", km: 7, d_plus: 246, d_moins: 246},
+    { id: "course1", name: "XL", km: 43.96, d_plus: 2887, d_moins: 2887},
+    { id: "course2", name: "L", km: 23.93, d_plus: 1447, d_moins: 1447},
+    { id: "course3", name: "M", km: 16.96 , d_plus: 982, d_moins: 982},
+    { id: "course4", name: "S", km: 7.03, d_plus: 231, d_moins: 231},
   ];
 
 
@@ -82,7 +80,6 @@ useEffect(() => {
     });
   });
 }, []);
-
 
 
   const [selectedCourse, setSelectedCourse] = useState(courses[0].id);
