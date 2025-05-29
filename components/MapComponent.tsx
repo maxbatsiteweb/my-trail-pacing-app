@@ -64,23 +64,27 @@ function MapInvalidateSize() {
   const map = useMap();
 
   useEffect(() => {
-    map.invalidateSize();
-  }, [map]);
+    // Invalide taille après un délai fixe
+    const timeout = setTimeout(() => {
+      map.invalidateSize();
+    }, 1500);
 
-  return null; // Ce composant n'affiche rien, il agit uniquement en fond
-}
+    // Invalide taille à chaque chargement de tuile
+    const onTileLoad = () => {
+      map.invalidateSize();
+    };
+    map.on('tileload', onTileLoad);
 
-function DebugMap() {
-  const map = useMap();
-
-  useEffect(() => {
-    // Expose la carte dans la console globale (juste pour debug)
-    window.myLeafletMap = map;
-    console.log('Map accessible via window.myLeafletMap');
+    return () => {
+      clearTimeout(timeout);
+      map.off('tileload', onTileLoad);
+    };
   }, [map]);
 
   return null;
 }
+
+
 
   return (
     <MapContainer
@@ -91,7 +95,6 @@ function DebugMap() {
       style={{ height: "100%", width: "100%" }}
     >
       <MapInvalidateSize />
-      <DebugMap />
 
       <Polyline positions={points} color="blue" />
 
