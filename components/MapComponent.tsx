@@ -67,7 +67,7 @@ function MapInvalidateSize() {
     // Invalide taille après un délai fixe
     const timeout = setTimeout(() => {
       map.invalidateSize();
-    }, 1500);
+    }, 10000);
 
     // Invalide taille à chaque chargement de tuile
     const onTileLoad = () => {
