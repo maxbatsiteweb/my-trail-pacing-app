@@ -55,23 +55,10 @@ function MapInvalidateSize() {
   const map = useMap();
 
   useEffect(() => {
-    const resize = () => {
-      const container = map?.getContainer();
-      if (container && container.offsetHeight > 0) {
-        map.invalidateSize();
-      }
-    };
-
-    const timeout = setTimeout(resize, 3000); // plus long
-    window.addEventListener('resize', resize);
-
-    return () => {
-      clearTimeout(timeout);
-      window.removeEventListener('resize', resize);
-    };
+    map.invalidateSize();
   }, [map]);
 
-  return null;
+  return null; // Ce composant n'affiche rien, il agit uniquement en fond
 }
 
   return (
