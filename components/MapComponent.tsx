@@ -15,6 +15,13 @@ import { useMap } from 'react-leaflet';
 
 import type { ReactElement } from "react";
 
+// Extend the Window interface to include myLeafletMap for TypeScript
+declare global {
+  interface Window {
+    myLeafletMap?: any;
+  }
+}
+
 const createIcon = (icon: ReactElement) => {
   return new DivIcon({
     html: ReactDOMServer.renderToString(icon),
@@ -61,6 +68,18 @@ function MapInvalidateSize() {
   return null; // Ce composant n'affiche rien, il agit uniquement en fond
 }
 
+function DebugMap() {
+  const map = useMap();
+
+  useEffect(() => {
+    // Expose la carte dans la console globale (juste pour debug)
+    window.myLeafletMap = map;
+    console.log('Map accessible via window.myLeafletMap');
+  }, [map]);
+
+  return null;
+}
+
   return (
     <MapContainer
      key="fixed-key"
@@ -70,6 +89,7 @@ function MapInvalidateSize() {
       style={{ height: "100%", width: "100%" }}
     >
       <MapInvalidateSize />
+      <DebugMap />
 
       <Polyline positions={points} color="blue" />
 
