@@ -33,11 +33,11 @@ declare global {
   }
 }
 
-const MapComponent = dynamic(
+// const MapComponent = dynamic(
   
-  () => import("../components/MapComponent"), // Met ta map dans un fichier séparé, exemple MapComponent.tsx
-  { ssr: false } // <-- Désactive le SSR pour ce composant
-);
+//   () => import("../components/MapComponent"), // Met ta map dans un fichier séparé, exemple MapComponent.tsx
+//   { ssr: false } // <-- Désactive le SSR pour ce composant
+// );
 
 
 
@@ -358,11 +358,11 @@ const checkpoint_name =
     ? metaData[selected.name.toLowerCase() as keyof typeof metaData].checkpoint_name
     : [];
 
-const checkpointCoords = getCoordinatesFromDistances(
-  checkpoint_distance,
-  distances,
-  polylinePoints
-);
+// const checkpointCoords = getCoordinatesFromDistances(
+//   checkpoint_distance,
+//   distances,
+//   polylinePoints
+// );
 
 const checkpointCumulDistances = getCumulDistancesFromDistances(
   checkpoint_distance,
