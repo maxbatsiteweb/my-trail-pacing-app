@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import "leaflet/dist/leaflet.css";
-import dynamic from "next/dynamic";
+// import dynamic from "next/dynamic";
 import GeoJsonTable from "@/components/PacingCalculator";
 import Header from "@/components/Header"; 
 import { Chart,
@@ -252,27 +252,27 @@ const extraColumnFn = useMemo(() => {
 
 
 type Point = { lat: number; lng: number };
-const [polylinePoints, setPolylinePoints] = useState<Point[]>([]);
+// const [polylinePoints, setPolylinePoints] = useState<Point[]>([]);
 
-useEffect(() => {
-  fetch(geojsonPath)
-    .then((res) => res.json())
-    .then((geojson) => {
-      if (
-        geojson &&
-        geojson.geometry &&
-        geojson.geometry.type === "LineString" &&
-        Array.isArray(geojson.geometry.coordinates)
-      ) {
-        const points = geojson.geometry.coordinates.map((coord: number[]) => ({
-          lng: coord[0],
-          lat: coord[1],
-        }));
-        setPolylinePoints(points);
-      }
-    })
-    .catch((err) => console.error("Erreur de chargement du GeoJSON :", err));
-}, []);
+// useEffect(() => {
+//   fetch(geojsonPath)
+//     .then((res) => res.json())
+//     .then((geojson) => {
+//       if (
+//         geojson &&
+//         geojson.geometry &&
+//         geojson.geometry.type === "LineString" &&
+//         Array.isArray(geojson.geometry.coordinates)
+//       ) {
+//         const points = geojson.geometry.coordinates.map((coord: number[]) => ({
+//           lng: coord[0],
+//           lat: coord[1],
+//         }));
+//         setPolylinePoints(points);
+//       }
+//     })
+//     .catch((err) => console.error("Erreur de chargement du GeoJSON :", err));
+// }, []);
 
 
 // Exemple de données
@@ -306,26 +306,26 @@ useEffect(() => {
 
 
 
-function getCoordinatesFromDistances(
-  checkpointDistances: number[],
-  cumDistances: number[],
-  coordinates: Point[]
-): Point[] {
-  return checkpointDistances.map(cpDist => {
-    let closestIndex = 0;
-    let minDiff = Infinity;
+// function getCoordinatesFromDistances(
+//   checkpointDistances: number[],
+//   cumDistances: number[],
+//   coordinates: Point[]
+// ): Point[] {
+//   return checkpointDistances.map(cpDist => {
+//     let closestIndex = 0;
+//     let minDiff = Infinity;
 
-    for (let i = 0; i < cumDistances.length; i++) {
-      const diff = Math.abs(cumDistances[i] - cpDist);
-      if (diff < minDiff) {
-        minDiff = diff;
-        closestIndex = i;
-      }
-    }
+//     for (let i = 0; i < cumDistances.length; i++) {
+//       const diff = Math.abs(cumDistances[i] - cpDist);
+//       if (diff < minDiff) {
+//         minDiff = diff;
+//         closestIndex = i;
+//       }
+//     }
 
-    return coordinates[closestIndex];
-  });
-}
+//     return coordinates[closestIndex];
+//   });
+// }
 
 function getCumulDistancesFromDistances(
   checkpointDistances: number[],
