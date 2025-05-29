@@ -32,12 +32,14 @@ body {
 }
 
 /* ============ Layout ============ */
-.container {
+.main-container {
   display: grid;
   gap: 20px;
   padding: 20px;
   width: 100%;
+  max-width: 100%;
   grid-template-columns: 1fr;
+  box-sizing: border-box;
   grid-template-areas:
     "choice"
     "time"
@@ -46,6 +48,8 @@ body {
     "profile"
     "map";
 }
+
+
 
 .choice  { grid-area: choice; }
 .profile { grid-area: profile; }
@@ -56,7 +60,7 @@ body {
 
 /* Desktop layout */
 @media (min-width: 768px) {
-  .container {
+  .main-container {
     grid-template-columns: 1fr 2fr;
     grid-template-areas:
       "choice profile"
@@ -65,18 +69,15 @@ body {
       "data map";
     align-items: stretch;
   }
+}
 
   .map {
     display: flex;
     flex-direction: column;
+    height: 50vh;
   }
 
-  .leaflet-container {
-    flex-grow: 1;
-    height: 100% !important;
-    min-height: 300px; /* ou 50vh */
-  }
-}
+
 
 /* ============ Elements UI ============ */
 .box {
@@ -105,10 +106,14 @@ select, input {
 .leaflet-container {
   width: 100% !important;
   max-width: 100%;
-  height: 300px;
   border-radius: 8px;
   overflow-x: hidden;
+  flex-grow: 1;
+  height: 100% !important;
+  min-height: 300px; /* ou 50vh */
 }
+
+
 
 /* ============ Tooltips ============ */
 .tooltip-wrapper {
@@ -181,7 +186,11 @@ select, input {
 /* ============ Global container fix ============ */
 .container > * {
   min-width: 0;
-  width: 100%;
+  /*width: 100%;*/
   max-width: 100%;
   box-sizing: border-box;
+}
+
+.map, .profile, .resume, .data {
+  width: 100%;
 }

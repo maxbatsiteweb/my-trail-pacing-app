@@ -508,7 +508,7 @@ useEffect(() => {
   return (
     <>
     <Header /> 
-      <div className="container">
+      <div className="main-container">
         <section className="choice box">
           <label htmlFor="course-select">Sélectionnez une course :</label>
           <select

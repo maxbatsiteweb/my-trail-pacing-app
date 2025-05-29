@@ -76,8 +76,9 @@ function MapInvalidateSize() {
 
   return (
     <MapContainer
+     key="fixed-key"
       center={points[0] as [number, number]}
-      zoom={10}
+      zoom={13}
       scrollWheelZoom={true}
       style={{ height: "100%", width: "100%" }}
     >
