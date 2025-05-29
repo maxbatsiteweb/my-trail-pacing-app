@@ -66,8 +66,8 @@ body {
     grid-template-areas:
       "choice profile"
       "time profile"
-      "resume map"
-      "data map";
+      "resume profile"
+      "data profile";
     align-items: stretch;
   }
 }

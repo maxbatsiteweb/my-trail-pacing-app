@@ -526,7 +526,7 @@ useEffect(() => {
         <section className="profile box">
           <h2><strong>Profil</strong></h2>
           
-          <div style={{ height: "200px" }}>
+          <div style={{ height: "600px" }}>
           <canvas id="elevationChart"></canvas>
           </div>
 
