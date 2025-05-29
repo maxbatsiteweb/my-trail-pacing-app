@@ -523,11 +523,16 @@ useEffect(() => {
         </section>
 
 
-        <section className="profile box">
-          <h2><strong>Profil</strong></h2>
+        <section className="profile box" style={{ 
+    height: "100%", // ou 100vh ou ce que tu veux
+    display: "flex", 
+    flexDirection: "column" 
+  }}>
+          <h2  style={{ margin: 0 }}><strong>Profil</strong></h2>
           
-          <div style={{ height: "600px" }}>
-          <canvas id="elevationChart"></canvas>
+          <div style={{ flex: 1, position: "relative" }}>
+          <canvas id="elevationChart" 
+      style={{ width: "100%", height: "100%", display: "block", position: "absolute", top: 0, left: 0 }}></canvas>
           </div>
 
         </section>
