@@ -33,54 +33,23 @@ body {
 
 /* ============ Layout ============ */
 .main-container {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 20px;
   padding: 20px;
   width: 100%;
   max-width: 100%;
-  grid-template-columns: 1fr;
   box-sizing: border-box;
-  overflow-x: hidden;
-  grid-template-areas:
-    "choice"
-    "time"
-    "resume"
-    "data"
-    "profile"
-    "map";
 }
 
-
-
-.choice  { grid-area: choice; }
-.profile { grid-area: profile; }
-.time    { grid-area: time; }
-.map     { grid-area: map; }
-.resume  { grid-area: resume; }
-.data    { grid-area: data; }
-
-/* Desktop layout */
-@media (min-width: 768px) {
-  .main-container {
-    grid-template-columns: 1fr 2fr;
-    grid-template-areas:
-      "choice profile"
-      "time profile"
-      "resume profile"
-      "data profile";
-    align-items: stretch;
-  }
+/* À l'intérieur de .main-container, on distingue deux colonnes */
+.left-col {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-  .map {
-    display: flex;
-    flex-direction: column;
-    height: 50vh;
-  }
-
-
-
-/* ============ Elements UI ============ */
+/* On conserve les styles de box */
 .box {
   border: 1px solid #ccc;
   padding: 15px;
@@ -89,6 +58,41 @@ body {
   box-sizing: border-box;
 }
 
+/* Profil (colonne droite) */
+.profile {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-width: 0;
+  max-height: 100%;
+  /* Le canvas prendra toute la place dispo */
+}
+
+/* ============ Responsive desktop layout ============ */
+/* Desktop layout */
+/* Desktop layout */
+@media (min-width: 768px) {
+  .main-container {
+    flex-direction: row;
+    align-items: stretch; /* important pour la hauteur égale */
+  }
+
+  .left-col {
+    flex: 1 1 40%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .profile {
+    flex: 1 1 60%;
+    display: flex;
+    flex-direction: column;
+
+  }
+}
+
+/* ============ Elements UI ============ */
 label {
   font-weight: bold;
   display: block;
@@ -113,8 +117,6 @@ select, input {
   height: 100% !important;
   min-height: 300px; /* ou 50vh */
 }
-
-
 
 /* ============ Tooltips ============ */
 .tooltip-wrapper {
@@ -187,21 +189,9 @@ select, input {
 /* ============ Global container fix ============ */
 .main-container > * {
   min-width: 0;
-  /*width: 100%;*/
   max-width: 100%;
   box-sizing: border-box;
 }
-
-
-
-.map, .profile, .resume, .data {
-  width: 100%;
-}
-
-
-
-
-
 
 header {
   width: 100%;
@@ -213,21 +203,20 @@ header {
 header > div {
   display: flex;
   align-items: center;
-  gap: 1.5rem; /* équivalent space-x-6 */
-  flex-wrap: wrap; /* autorise passage à la ligne */
-  min-width: 0; /* important pour que les enfants rétrécissent */
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  min-width: 0;
 }
 
 nav {
   display: flex;
-  gap: 1rem; /* équivalent space-x-4 */
-  min-width: 0; /* important */
-  overflow-x: auto; /* pour scroll si trop large */
+  gap: 1rem;
+  min-width: 0;
+  overflow-x: auto;
 }
 
 nav a {
-  white-space: nowrap; /* éviter retour à la ligne au milieu du lien */
-  flex-shrink: 1; /* autorise réduction */
-  min-width: 0; /* important */
+  white-space: nowrap;
+  flex-shrink: 1;
+  min-width: 0;
 }
-

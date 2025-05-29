@@ -499,9 +499,11 @@ useEffect(() => {
 
 
   return (
-    <>
-    <Header /> 
-      <div className="main-container">
+  <>
+    <Header />
+    <div className="main-container">
+      {/* Colonne de gauche avec choix, temps, détails et points de passage */}
+      <div className="left-col">
         <section className="choice box">
           <label htmlFor="course-select">Sélectionnez une course :</label>
           <select
@@ -515,137 +517,93 @@ useEffect(() => {
               </option>
             ))}
           </select>
-
-          
         </section>
-
-
-        <section className="profile box" style={{ 
-    height: "100%", // ou 100vh ou ce que tu veux
-    display: "flex", 
-    flexDirection: "column" 
-  }}>
-          <h2  style={{ margin: 0 }}><strong>Profil</strong></h2>
-          
-          <div style={{ flex: 1, position: "relative" }}>
-          <canvas id="elevationChart" 
-      style={{ width: "100%", height: "100%", display: "block", top: 0, left: 0 }}></canvas>
-          </div>
-
-        </section>
-
 
         <section className="time box">
           <label htmlFor="estimated-time">Entrez votre temps estimé (hh:mm):</label>
           <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-
             <div>
-
-          <input
-            id="hours"
-            type="number"
-            min={0}
-            max={23}
-            value={hours}
-            onChange={handleHoursChange}
-            placeholder="hh"
-            style={{ width: 50 }}
-          />
-        </div>
-
-        <div>
-            <input
-              id="minutes"
-              type="number"
-              min={0}
-              max={59}
-              value={minutes}
-              onChange={handleMinutesChange}
-              placeholder="mm"
-              style={{ width: 50 }}
-            />
-          </div>
+              <input
+                id="hours"
+                type="number"
+                min={0}
+                max={23}
+                value={hours}
+                onChange={handleHoursChange}
+                placeholder="hh"
+                style={{ width: 50 }}
+              />
+            </div>
 
             <div>
               <input
-              id="seconds"
-              type="number"
-              min={0}
-              max={59}
-              value={seconds}
-              onChange={handleSecondsChange}
-              placeholder="ss"
-              style={{ width: 50 }}
-            />
+                id="minutes"
+                type="number"
+                min={0}
+                max={59}
+                value={minutes}
+                onChange={handleMinutesChange}
+                placeholder="mm"
+                style={{ width: 50 }}
+              />
             </div>
-            
+
+            <div>
+              <input
+                id="seconds"
+                type="number"
+                min={0}
+                max={59}
+                value={seconds}
+                onChange={handleSecondsChange}
+                placeholder="ss"
+                style={{ width: 50 }}
+              />
+            </div>
           </div>
         </section>
 
-
         <section className="resume box">
           <h2><strong>Détails</strong></h2>
-        
-            <br />
-            Temps estimé : <strong>{secondsToHHMMSS(totalSeconds)}</strong><br /> 
-            <div className="tooltip-wrapper">
-              Allure ajustée: <strong>{vap_string}  </strong> 
-              <div className="tooltip-icon">?</div>
-              <div className="tooltip-text">Ceci est l&apos;allure normalisée, si le terrain est plat et facile</div>
-            </div> <br />
-
-            Distance : <strong>{courses.find((c) => c.id === selectedCourse)?.km} Km</strong><br />
-            Dénivelé positif : <strong>{courses.find((c) => c.id === selectedCourse)?.d_plus} m</strong><br />
-            Dénivelé négatif : <strong>{courses.find((c) => c.id === selectedCourse)?.d_moins} m</strong><br />
-
-          
+          <br />
+          Temps estimé : <strong>{secondsToHHMMSS(totalSeconds)}</strong><br />
+          <div className="tooltip-wrapper">
+            Allure ajustée: <strong>{vap_string}  </strong>
+            <div className="tooltip-icon">?</div>
+            <div className="tooltip-text">Ceci est l&apos;allure normalisée, si le terrain est plat et facile</div>
+          </div> <br />
+          Distance : <strong>{courses.find((c) => c.id === selectedCourse)?.km} Km</strong><br />
+          Dénivelé positif : <strong>{courses.find((c) => c.id === selectedCourse)?.d_plus} m</strong><br />
+          Dénivelé négatif : <strong>{courses.find((c) => c.id === selectedCourse)?.d_moins} m</strong><br />
         </section>
-           
-            {/* <div className="map">
-            
-            <MapComponent
-              points={polylinePoints.map(p => [p.lat, p.lng])}
-              checkPoints={
-                  Array.isArray(checkpointCoords)
-                    ? checkpointCoords
-                        .filter((p) => p && typeof p.lat === 'number' && typeof p.lng === 'number')
-                        .map((p) => [p.lat, p.lng])
-                    : []
-                }
-
-              checkPointsNames={
-                Array.isArray(checkpoint_name) && checkpoint_name.length > 0
-                  ? checkpoint_name
-                  : [""]
-              }
-            />
-
-            
-            </div> */}
-       
 
         <section className="data box">
           <h2><strong>Points de passage</strong></h2>
-
-
           <div>
-                <GeoJsonTable
-                    extraColumnName="Temps"
-                    extraColumnFn={extraColumnFn}
-                    extraColumnPoint={metaData && selected
-                        ? metaData[selected.name.toLowerCase() as keyof typeof metaData].checkpoint_distance
-                        : []}
-                    extraColumnPointName={metaData && selected
-                        ? metaData[selected.name.toLowerCase() as keyof typeof metaData].checkpoint_name
-                        : []}
-                    geojsonPath={geojsonPath}
-                  />
-
-              </div>
-
-
+            <GeoJsonTable
+              extraColumnName="Temps"
+              extraColumnFn={extraColumnFn}
+              extraColumnPoint={metaData && selected
+                ? metaData[selected.name.toLowerCase() as keyof typeof metaData].checkpoint_distance
+                : []}
+              extraColumnPointName={metaData && selected
+                ? metaData[selected.name.toLowerCase() as keyof typeof metaData].checkpoint_name
+                : []}
+              geojsonPath={geojsonPath}
+            />
+          </div>
         </section>
       </div>
-    </>
-  );
+
+      {/* Colonne profil (droite) */}
+      <section className="profile box">
+    <h2 style={{ margin: 0 }}><strong>Profil</strong></h2>
+    <div style={{ flex: 1, position: "relative" }}>
+      <canvas id="elevationChart"  />
+    </div>
+  </section>
+    </div>
+  </>
+);
+
 }
