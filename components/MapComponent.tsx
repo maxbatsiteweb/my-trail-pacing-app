@@ -70,10 +70,6 @@ function MapInvalidateSize() {
       style={{ height: "100%", width: "100%" }}
     >
       <MapInvalidateSize />
-      <TileLayer
-        attribution='&copy; OpenStreetMap contributors'
-    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
 
       <Polyline positions={points} color="blue" />
 
@@ -92,6 +88,13 @@ function MapInvalidateSize() {
               </Tooltip>
         </Marker>
       )}
+      
+      <TileLayer
+        attribution='&copy; OpenStreetMap contributors'
+    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+
+      
 
 
       {checkPoints.map((pos, idx) => (
