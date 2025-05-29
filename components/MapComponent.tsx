@@ -12,13 +12,15 @@ import ReactDOMServer from "react-dom/server";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {faLocationDot } from '@fortawesome/free-solid-svg-icons'
 import { useMap } from 'react-leaflet';
+import type { Map } from 'leaflet';
 
 import type { ReactElement } from "react";
 
 // Extend the Window interface to include myLeafletMap for TypeScript
+
 declare global {
   interface Window {
-    myLeafletMap?: any;
+    myLeafletMap?: Map;  // indique que myLeafletMap est un objet Leaflet Map optionnel
   }
 }
 
