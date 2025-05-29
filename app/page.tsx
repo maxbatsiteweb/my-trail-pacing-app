@@ -532,7 +532,7 @@ useEffect(() => {
           
           <div style={{ flex: 1, position: "relative" }}>
           <canvas id="elevationChart" 
-      style={{ width: "100%", height: "100%", display: "block", position: "absolute", top: 0, left: 0 }}></canvas>
+      style={{ width: "100%", height: "100%", display: "block", top: 0, left: 0 }}></canvas>
           </div>
 
         </section>
@@ -604,7 +604,7 @@ useEffect(() => {
           
         </section>
            
-            <div className="map">
+            {/* <div className="map">
             
             <MapComponent
               points={polylinePoints.map(p => [p.lat, p.lng])}
@@ -624,7 +624,7 @@ useEffect(() => {
             />
 
             
-            </div>
+            </div> */}
        
 
         <section className="data box">
