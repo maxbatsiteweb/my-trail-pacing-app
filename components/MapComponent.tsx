@@ -62,7 +62,7 @@ function MapInvalidateSize() {
       }
     };
 
-    const timeout = setTimeout(resize, 500); // plus long
+    const timeout = setTimeout(resize, 3000); // plus long
     window.addEventListener('resize', resize);
 
     return () => {

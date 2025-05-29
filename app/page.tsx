@@ -84,10 +84,6 @@ useEffect(() => {
 }, []);
 
 
- 
-
-
-
 
   const [selectedCourse, setSelectedCourse] = useState(courses[0].id);
   const [hours, setHours] = useState("1");
@@ -603,7 +599,7 @@ useEffect(() => {
           
         </section>
            
-            <div className="map overflow-hidden">
+            <div className="map">
             
             <MapComponent
               points={polylinePoints.map(p => [p.lat, p.lng])}
