@@ -19,16 +19,16 @@ export default function Header() {
           />
         </Link>
         {/* Titre à droite du logo */}
-        <h1 className="text-xl font-bold text-black">
+        <h3 className="text-l font-bold text-black">
           <Link
             href="https://maximebataille-trailrunning.fr/index"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xl font-bold text-black"
+            className="text-l font-bold text-black"
           >
             Endurance 142 - Coaching trail
           </Link>
-        </h1>
+        </h3>
       </div>
     </header>
   );
