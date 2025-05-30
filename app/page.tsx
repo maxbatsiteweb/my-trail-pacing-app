@@ -376,16 +376,17 @@ const drawLabelsPlugin = {
     const meta = chart.getDatasetMeta(chart.data.datasets.indexOf(dataset));
 
     ctx.save();
-    ctx.font = '15px Arial';
+    ctx.font = '13px Arial';
     ctx.fillStyle = 'black';
     ctx.textAlign = 'center';
 
     meta.data.forEach((point, index) => {
-      const label = checkpoint_name[index] || '';
-      if (label) {
+      
+      
         // Position du texte : au-dessus du point (point.y - 10)
-        ctx.fillText(label, point.x, point.y - 10);
-      }
+        ctx.fillText('💧', point.x, point.y - 7);
+        ctx.fillText('🍪', point.x, point.y - 24);
+      
     });
 
     ctx.restore();
@@ -422,11 +423,13 @@ useEffect(() => {
         tension: 0.1,
         pointRadius: 0,
         fill: true,
+        borderWidth: 1,
       };
 
       
 
       // Use ChartDataset<'line', number[]> for line, and ChartDataset<'scatter', ScatterDataPoint[]> for scatter
+      
       const scatterDataset: ChartDataset<'scatter', ScatterDataPoint[]> = {
         type: 'scatter',
         label: 'Checkpoints',
@@ -434,8 +437,8 @@ useEffect(() => {
         showLine: false,
         pointStyle: 'circle',
         pointRadius: 5,
-        borderColor: 'red',
-        backgroundColor: 'red',
+        borderColor: 'transparent',
+        backgroundColor: 'transparent',
         parsing: false,
       };
 
@@ -505,7 +508,7 @@ useEffect(() => {
       {/* Colonne de gauche avec choix, temps, détails et points de passage */}
       <div className="left-col">
         <section className="choice box">
-          <label htmlFor="course-select">Sélectionnez une course :</label>
+          <label htmlFor="course-select">Sélectionner une course :</label>
           <select
             id="course-select"
             value={selectedCourse}
@@ -520,7 +523,7 @@ useEffect(() => {
         </section>
 
         <section className="time box">
-          <label htmlFor="estimated-time">Entrez votre temps estimé (hh:mm):</label>
+          <label htmlFor="estimated-time">Estimer un temps (hh:mm:ss)</label>
           <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
             <div>
               <input
@@ -577,6 +580,18 @@ useEffect(() => {
           Dénivelé négatif : <strong>{courses.find((c) => c.id === selectedCourse)?.d_moins} m</strong><br />
         </section>
 
+        
+      </div>
+
+      {/* Colonne profil (droite) */}
+      <div className="right-col">
+        <section className="profile box" >
+
+          <div style={{ flex: 1, position: "relative" , overflow: "hidden"}}>
+            <canvas id="elevationChart"  />
+          </div>
+        </section>
+
         <section className="data box">
           <h2><strong>Points de passage</strong></h2>
           <div>
@@ -594,15 +609,7 @@ useEffect(() => {
           </div>
         </section>
       </div>
-
-      {/* Colonne profil (droite) */}
-      <section className="profile box">
-    <h2 style={{ margin: 0 }}><strong>Profil</strong></h2>
-    <div style={{ flex: 1, position: "relative" }}>
-      <canvas id="elevationChart"  />
-    </div>
-  </section>
-    </div>
+      </div>
   </>
 );
 
