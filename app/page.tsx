@@ -516,7 +516,7 @@ useEffect(() => {
       {/* Colonne de gauche avec choix, temps, détails et points de passage */}
       <div className="left-col">
         <section className="choice box">
-          <label htmlFor="course-select">Sélectionner une course :</label>
+          <label htmlFor="course-select">Sélectionner une course</label>
           <select
             id="course-select"
             value={selectedCourse}
