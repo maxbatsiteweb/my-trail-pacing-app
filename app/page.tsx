@@ -350,10 +350,10 @@ const checkpoint_distance =
     ? metaData[selected.name.toLowerCase() as keyof typeof metaData].checkpoint_distance
     : [];
 
-const checkpoint_name =
-  metaData && selected
-    ? metaData[selected.name.toLowerCase() as keyof typeof metaData].checkpoint_name
-    : [];
+// const checkpoint_name =
+//   metaData && selected
+//     ? metaData[selected.name.toLowerCase() as keyof typeof metaData].checkpoint_name
+//     : [];
 
 // const checkpointCoords = getCoordinatesFromDistances(
 //   checkpoint_distance,
@@ -380,7 +380,7 @@ const drawLabelsPlugin = {
     ctx.fillStyle = 'black';
     ctx.textAlign = 'center';
 
-    meta.data.forEach((point, index) => {
+    meta.data.forEach((point) => {
       
       
         // Position du texte : au-dessus du point (point.y - 10)
