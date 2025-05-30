@@ -441,6 +441,10 @@ useEffect(() => {
         backgroundColor: 'transparent',
         parsing: false,
       };
+      const maxAltitude = Math.max(...altitudes);
+      const maxEmojiAltitude = Math.max(...checkpointPoints.map(p => p.y));
+      const yMax = Math.max(maxAltitude, maxEmojiAltitude) + 800; // +20 pour marge
+      const maxDistance = Math.max(...distances) / 1000; // dernière distance en km
 
       window.elevationChartInstance = new Chart(ctx, {
         type: 'line',
@@ -456,6 +460,8 @@ useEffect(() => {
           scales: {
             x: {
               type: 'linear',
+              min:0,
+              max: maxDistance,    // limite max forcée à la dernière distance
               title: {
                 display: true,
                 text: 'Distance (km)'
@@ -465,7 +471,9 @@ useEffect(() => {
               title: {
                 display: true,
                 text: 'Altitude (m)'
-              }
+              },
+                  min: 0,       // si tu veux un minimum fixe
+                  max: yMax, 
             }
           },
           plugins: {
